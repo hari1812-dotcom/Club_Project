@@ -1,0 +1,202 @@
+require("dotenv").config();
+const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
+const User = require("../models/User");
+const Club = require("../models/Club");
+
+const categories = {
+  Technical: ["Code Circle Club", "Math Club", "Science Club", "FOSS Club"],
+  "Cultural & Creative": [
+    "Fine Arts Club",
+    "Music Club",
+    "Photo Hub",
+    "Muthamizh Mandram",
+  ],
+  Social: [
+    "Community Service Club",
+    "YRC",
+    "Rotaract Club",
+    "UBA",
+    "Leo Club",
+  ],
+  Civic: [
+    "Women Development Cell",
+    "Great Minds Club",
+    "Geo Club",
+    "Yoga Club",
+  ],
+};
+
+const clubDetails = {
+  "Code Circle Club": {
+    description:
+      "A club for coding enthusiasts. We conduct hackathons, coding competitions, and hands-on workshops on programming languages and development tools. Join to build projects and compete at inter-college events.",
+    equipment: ["Laptops", "Projector", "Whiteboard", "Coding platforms (online)", "Wi-Fi"],
+  },
+  "Math Club": {
+    description:
+      "For students who love mathematics. We focus on problem-solving, Olympiad preparation, and mathematical modelling. Regular sessions and practice tests for competitive exams.",
+    equipment: ["Whiteboard", "Projector", "Reference books", "Problem sets", "Graphing tools"],
+  },
+  "Science Club": {
+    description:
+      "Explore science through experiments, science fairs, and guest lectures. We cover physics, chemistry, and biology with hands-on activities and project exhibitions.",
+    equipment: ["Lab equipment", "Projector", "Models & charts", "Safety gear", "Chemicals (supervised)"],
+  },
+  "FOSS Club": {
+    description:
+      "Free and Open Source Software club. Learn to contribute to open source projects, use Linux, and participate in community-driven development and events.",
+    equipment: ["Laptops", "Projector", "GitHub/organisation access", "Linux workstations"],
+  },
+  "Fine Arts Club": {
+    description:
+      "For painting, sketching, and visual arts. We hold exhibitions, workshops, and collaborative art projects. All skill levels welcome.",
+    equipment: ["Canvas", "Brushes", "Paints (acrylic, watercolour)", "Easels", "Sketch pads", "Pencils & charcoal"],
+  },
+  "Music Club": {
+    description:
+      "Learn and perform music. We have practice sessions, band performances, and cultural events. Instruments are available for use during club hours.",
+    equipment: ["Guitar (acoustic & electric)", "Piano", "Keyboard", "Drums", "Tabla", "Microphone", "Amplifier", "Sound system"],
+  },
+  "Photo Hub": {
+    description:
+      "Photography and photo editing club. Covers basics to advanced techniques, photo walks, and exhibitions. Use club equipment for assignments and projects.",
+    equipment: ["DSLR cameras", "Tripods", "Editing software (license)", "Studio lights", "Backdrops", "Reflectors"],
+  },
+  "Muthamizh Mandram": {
+    description:
+      "Tamil literature, drama, and cultural activities. We organise drama rehearsals, literary events, and stage performances for college and inter-college festivals.",
+    equipment: ["Sound system", "Stage lights", "Costumes", "Props", "Microphones", "Green room"],
+  },
+  "Community Service Club": {
+    description:
+      "Volunteering and community outreach. We organise blood donation camps, village visits, and awareness drives. Make a difference while building leadership skills.",
+    equipment: ["Projector", "Banners & posters", "First aid kits", "Volunteer kits", "Megaphone"],
+  },
+  "YRC": {
+    description:
+      "Youth Red Cross unit. First aid training, health awareness, and disaster preparedness programmes. Certifications and camps in partnership with Red Cross.",
+    equipment: ["First aid kits", "Projector", "Training mannequins", "Banners", "Health pamphlets"],
+  },
+  "Rotaract Club": {
+    description:
+      "Rotaract focuses on community service, professional development, and leadership. Joint projects with Rotary, fundraising events, and skill workshops.",
+    equipment: ["Projector", "Banners", "Event kits", "Sound system"],
+  },
+  "UBA": {
+    description:
+      "Unnat Bharat Abhiyan – connecting with rural communities. Surveys, awareness programmes, and technical solutions for village development.",
+    equipment: ["Projector", "Survey tools", "Banners", "Laptops", "Cameras"],
+  },
+  "Leo Club": {
+    description:
+      "Leadership, Experience, Opportunity. Youth wing of Lions Club. Community service, leadership workshops, and international exchange opportunities.",
+    equipment: ["Projector", "Banners", "Event kits", "Sound system"],
+  },
+  "Women Development Cell": {
+    description:
+      "Empowerment, safety, and career guidance for women. Workshops on legal awareness, self-defence, and skill development. Safe space for discussions and mentorship.",
+    equipment: ["Projector", "Whiteboard", "Resource materials", "First aid", "Library"],
+  },
+  "Great Minds Club": {
+    description:
+      "Debates, quizzes, and critical thinking. We host inter-college quizzes, debate competitions, and group discussions. Build confidence and reasoning skills.",
+    equipment: ["Projector", "Buzzer system", "Whiteboard", "Timer", "Microphones"],
+  },
+  "Geo Club": {
+    description:
+      "Geography and environment club. Map reading, GIS basics, field trips, and awareness on climate and sustainability. Guest lectures and documentary screenings.",
+    equipment: ["Maps & atlases", "Projector", "Models (globe, terrain)", "GPS devices", "Charts"],
+  },
+  "Yoga Club": {
+    description:
+      "Yoga and meditation for fitness and mental wellness. Regular sessions, meditation workshops, and participation in yoga day and sports events.",
+    equipment: ["Yoga mats", "Meditation cushions", "Sound system", "Mirrors", "First aid"],
+  },
+};
+
+async function seed() {
+  const uri = process.env.MONGO_URI || "mongodb://localhost:27017";
+  await mongoose.connect(uri, {
+    dbName: process.env.MONGO_DB_NAME || "club_membership_manager",
+  });
+
+  const hashed = await bcrypt.hash("admin123", 10);
+  let admin = await User.findOne({ email: "admin@college.edu" });
+  if (!admin) {
+    admin = await User.create({
+      name: "Admin",
+      email: "admin@college.edu",
+      password: hashed,
+      role: "admin",
+    });
+    console.log("Admin created: admin@college.edu / admin123");
+  }
+
+  const facultyPass = await bcrypt.hash("faculty123", 10);
+  let faculty = await User.findOne({ email: "faculty@college.edu" });
+  if (!faculty) {
+    faculty = await User.create({
+      name: "Faculty Incharge",
+      email: "faculty@college.edu",
+      password: facultyPass,
+      role: "faculty",
+      department: "CSE",
+      phone: "9876543210",
+    });
+    console.log("Faculty created: faculty@college.edu / faculty123");
+  }
+
+  const studentPass = await bcrypt.hash("student123", 10);
+  let student = await User.findOne({ email: "student@college.edu" });
+  if (!student) {
+    student = await User.create({
+      name: "Test Student",
+      email: "student@college.edu",
+      password: studentPass,
+      role: "student",
+    });
+    console.log("Student created: student@college.edu / student123");
+  }
+
+  for (const [category, names] of Object.entries(categories)) {
+    for (const name of names) {
+      const details = clubDetails[name] || {
+        description: `${name} – College club for students. Join to learn and participate in activities.`,
+        equipment: [],
+      };
+      const exists = await Club.findOne({ name });
+      if (exists) {
+        await Club.updateOne(
+          { name },
+          {
+            description: details.description,
+            equipment: details.equipment,
+            category,
+            facultyIncharge: faculty._id,
+            maxCapacity: 100,
+          }
+        );
+        console.log("Club updated:", name);
+      } else {
+        await Club.create({
+          name,
+          category,
+          description: details.description,
+          equipment: details.equipment,
+          facultyIncharge: faculty._id,
+          maxCapacity: 100,
+        });
+        console.log("Club created:", name);
+      }
+    }
+  }
+
+  console.log("Seed done.");
+  process.exit(0);
+}
+
+seed().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
