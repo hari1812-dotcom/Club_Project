@@ -12,7 +12,10 @@ const clubRequestSchema = new mongoose.Schema(
       ref: "Club",
       required: true,
     },
-    formResponseUrl: { type: String, required: true },
+    formResponseUrl: { type: String }, // removed required
+    phone: { type: String },
+    year: { type: Number },
+    regNo: { type: String },
     reason: { type: String },
     status: {
       type: String,
@@ -26,4 +29,3 @@ const clubRequestSchema = new mongoose.Schema(
 clubRequestSchema.index({ studentId: 1, clubId: 1 }, { unique: true });
 
 module.exports = mongoose.model("ClubRequest", clubRequestSchema);
-

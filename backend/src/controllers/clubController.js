@@ -77,7 +77,9 @@ exports.createClub = async (req, res, next) => {
 // Faculty: clubs they manage
 exports.getMyClubs = async (req, res, next) => {
   try {
-    const clubs = await Club.find({ facultyIncharge: req.user.id }).lean();
+    const clubs = await Club.find({ facultyIncharge: req.user.id })
+      .populate("members", "name email")
+      .lean();
     res.json(clubs);
   } catch (err) {
     next(err);
@@ -93,4 +95,45 @@ exports.getStudentClubs = async (req, res, next) => {
     next(err);
   }
 };
+// Faculty: get club members with their request details
+exports.getClubMembers = async (req, res, next) => {
+  try {
+    const club = await Club.findById(req.params.id)
+      .populate("members", "name email department phone")
+      .lean();
 
+    if (!club) return res.status(404).json({ message: "Club not found" });
+
+    if (club.facultyIncharge.toString() !== req.user.id.toString()) {
+      return res.status(403).json({ message: "Not your club" });
+    }
+
+    // Get request details for each member
+    const ClubRequest = require("../models/ClubRequest");
+    const requests = await ClubRequest.find({
+      clubId: req.params.id,
+      status: "Approved",
+    }).lean();
+
+    const requestMap = {};
+    requests.forEach((r) => {
+      requestMap[r.studentId.toString()] = r;
+    });
+
+    const membersWithDetails = club.members.map((m) => {
+      const req = requestMap[m._id.toString()] || {};
+      return {
+        ...m,
+        phone: req.phone || m.phone || "—",
+        year: req.year || "—",
+        regNo: req.regNo || "—",
+        reason: req.reason || "—",
+        joinedAt: req.updatedAt || "—",
+      };
+    });
+
+    res.json({ ...club, members: membersWithDetails });
+  } catch (err) {
+    next(err);
+  }
+};

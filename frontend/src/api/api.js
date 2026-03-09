@@ -30,6 +30,7 @@ export const clubsApi = {
   getById: (id) => request(`/clubs/${id}`),
   myClubs: () => request("/clubs/student-clubs"),
   facultyClubs: () => request("/clubs/my-clubs"),
+  clubMembers: (id) => request(`/clubs/${id}/members`), // ✅ new
 };
 
 export const clubRequestsApi = {
