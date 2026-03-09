@@ -20,75 +20,137 @@ const TIPS = [
 
 const STAT_CONFIG = [
   {
-    label: "MY CLUBS",
+    label: "My Clubs",
     key: "clubs",
     link: "/student/my-clubs",
     icon: "🎯",
-    iconBg: "bg-blue-500",
-    cardBg: "bg-blue-100",
-    numColor: "text-blue-700",
+    accent: "#6366f1",
+    frontBg: "linear-gradient(145deg,#eef2ff,#f5f3ff)",
+    frontBorder: "#e0e7ff",
+    frontShadow: "rgba(99,102,241,0.10)",
+    backMsg: "Clubs you've joined appear here. Explore and join clubs that match your interests!",
   },
   {
-    label: "UPCOMING EVENTS",
+    label: "Upcoming Events",
     key: "events",
     link: "/student/events",
     icon: "📅",
-    iconBg: "bg-purple-500",
-    cardBg: "bg-purple-100",
-    numColor: "text-purple-700",
+    accent: "#8b5cf6",
+    frontBg: "linear-gradient(145deg,#f5f3ff,#faf5ff)",
+    frontBorder: "#ede9fe",
+    frontShadow: "rgba(139,92,246,0.10)",
+    backMsg: "Events from your clubs will show here. Stay tuned for exciting activities ahead!",
   },
   {
-    label: "PENDING REQUESTS",
+    label: "Pending Requests",
     key: "requests",
     link: "/student/my-clubs",
     icon: "⏳",
-    iconBg: "bg-amber-500",
-    cardBg: "bg-amber-100",
-    numColor: "text-amber-700",
+    accent: "#f59e0b",
+    frontBg: "linear-gradient(145deg,#fffbeb,#fef9ee)",
+    frontBorder: "#fde68a",
+    frontShadow: "rgba(245,158,11,0.12)",
+    backMsg: "Your pending membership requests are shown here. Approvals usually take 1–2 days.",
   },
 ];
 
-function FlipCard({ front, back }) {
+function FlipCard({ label, link, icon, accent, frontBg, frontBorder, frontShadow, backMsg, value }) {
   const [flipped, setFlipped] = useState(false);
   return (
     <div
       onClick={() => setFlipped((f) => !f)}
-      className="cursor-pointer"
-      style={{ perspective: "1000px", height: "160px" }}
+      style={{ perspective: 900, cursor: "pointer", flex: "1 1 0", minWidth: 0 }}
     >
       <div
         style={{
           position: "relative",
-          width: "100%",
-          height: "100%",
+          height: 160,
           transformStyle: "preserve-3d",
           transition: "transform 0.55s cubic-bezier(0.4,0.2,0.2,1)",
           transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
         }}
       >
+        {/* FRONT */}
         <div
           style={{
             position: "absolute",
-            width: "100%",
-            height: "100%",
+            inset: 0,
+            background: frontBg,
+            border: `1px solid ${frontBorder}`,
+            borderRadius: 18,
+            padding: "20px 22px",
             backfaceVisibility: "hidden",
             WebkitBackfaceVisibility: "hidden",
+            boxShadow: `0 4px 18px ${frontShadow}`,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
           }}
         >
-          {front}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+            <div
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: 12,
+                background: `${accent}22`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 21,
+              }}
+            >
+              {icon}
+            </div>
+            <span style={{ fontSize: 10.5, color: "#b0b0c0", fontWeight: 500 }}>flip ↻</span>
+          </div>
+          <div>
+            <p style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", color: "#9ca3af", textTransform: "uppercase", marginBottom: 5 }}>
+              {label}
+            </p>
+            <p style={{ fontSize: 46, fontWeight: 800, color: accent, lineHeight: 1 }}>
+              {value}
+            </p>
+          </div>
         </div>
-        <div
-          style={{
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-            backfaceVisibility: "hidden",
-            WebkitBackfaceVisibility: "hidden",
-            transform: "rotateY(180deg)",
-          }}
-        >
-          {back}
-        </div>
+
+        {/* BACK */}
+        <Link to={link} onClick={(e) => e.stopPropagation()} style={{ textDecoration: "none" }}>
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "linear-gradient(135deg,#1e1b4b,#312e81)",
+              borderRadius: 18,
+              backfaceVisibility: "hidden",
+              WebkitBackfaceVisibility: "hidden",
+              transform: "rotateY(180deg)",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 10,
+              padding: "18px 20px",
+              textAlign: "center",
+            }}
+          >
+            <span style={{ fontSize: 26 }}>{icon}</span>
+            <p style={{ fontSize: 12.5, color: "#c7d2fe", lineHeight: 1.55, margin: 0 }}>{backMsg}</p>
+            <div
+              style={{
+                marginTop: 4,
+                background: accent,
+                color: "#fff",
+                fontSize: 12.5,
+                fontWeight: 700,
+                padding: "6px 18px",
+                borderRadius: 50,
+              }}
+            >
+              View →
+            </div>
+          </div>
+        </Link>
       </div>
     </div>
   );
@@ -124,166 +186,230 @@ export default function StudentDashboard() {
   const maxPoints = 500;
   const progress = Math.min((points / maxPoints) * 100, 100);
   const tier =
-    points >= 400 ? "🥇 Gold" : points >= 200 ? "🥈 Silver" : "🥉 Bronze";
+    points >= 400
+      ? { label: "Gold", icon: "🥇", text: "#92400e", bg: "#fde68a" }
+      : points >= 200
+      ? { label: "Silver", icon: "🥈", text: "#374151", bg: "#f3f4f6" }
+      : { label: "Bronze", icon: "🥉", text: "#92400e", bg: "#fef3c7" };
 
   return (
     <DashboardLayout title="Student Dashboard">
-      <div className="max-w-5xl mx-auto">
+      <>
+        <style>{`
+          @keyframes sdFadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+          }
+          .sd-cat-link { display:flex; align-items:center; gap:10px; padding:13px 16px; background:#fff; border:1px solid #ededf5; border-radius:14px; font-size:13.5px; font-weight:600; color:#374151; text-decoration:none; transition:all 0.18s; }
+          .sd-cat-link:hover { border-color:#c7d2fe; background:#f5f3ff; }
+          .sd-action-btn { display:flex; align-items:center; gap:8px; padding:10px 18px; background:#fff; border:1px solid #ededf5; border-radius:50px; font-size:13.5px; font-weight:600; color:#374151; text-decoration:none; box-shadow:0 1px 4px rgba(0,0,0,0.05); transition:all 0.18s; }
+          .sd-action-btn:hover { background:#eef2ff; border-color:#c7d2fe; }
+        `}</style>
 
-        {/* Greeting */}
-        <div className="mb-6">
-          <p className="text-slate-700 text-sm">
-            Welcome back, <strong>{user?.name || "Student"}</strong> 👋
-          </p>
-          <p className="text-slate-400 text-xs mt-1">
-            Here's what's happening with your clubs today.
-          </p>
-        </div>
+        <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", flexDirection: "column", gap: 22 }}>
 
-        {/* Tip Banner */}
-        <div className="bg-indigo-50 border border-indigo-200 rounded-xl px-4 py-3 flex items-center gap-3 mb-6">
-          <span className="text-base">💡</span>
-          <p key={tipIndex} className="text-indigo-700 text-sm font-medium">
-            {TIPS[tipIndex]}
-          </p>
-        </div>
-
-        {/* Flip Stat Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
-          {STAT_CONFIG.map((cfg) => (
-            <FlipCard
-              key={cfg.key}
-              front={
-                <div
-                  className={`${cfg.cardBg} rounded-2xl p-5 h-full flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow`}
-                  style={{ boxSizing: "border-box" }}
-                >
-                  <div className="flex justify-between items-start">
-                    <div
-                      className={`${cfg.iconBg} w-11 h-11 rounded-xl flex items-center justify-center text-xl`}
-                    >
-                      {cfg.icon}
-                    </div>
-                    <span className="text-xs text-black/30 font-medium">flip ↻</span>
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold tracking-widest text-black/40 uppercase mb-1">
-                      {cfg.label}
-                    </p>
-                    <p className={`text-5xl font-extrabold leading-none ${cfg.numColor}`}>
-                      {stats[cfg.key]}
-                    </p>
-                  </div>
-                </div>
-              }
-              back={
-                <Link
-                  to={cfg.link}
-                  className="block h-full"
-                  style={{ textDecoration: "none" }}
-                >
-                  <div className="bg-slate-800 rounded-2xl h-full flex flex-col items-center justify-center gap-3">
-                    <span className="text-3xl">{cfg.icon}</span>
-                    <p className="text-slate-400 text-sm font-semibold">
-                      View {cfg.label.toLowerCase()}
-                    </p>
-                    <div className="bg-indigo-500 text-white text-sm font-semibold px-5 py-1.5 rounded-lg">
-                      Go →
-                    </div>
-                  </div>
-                </Link>
-              }
-            />
-          ))}
-        </div>
-
-        {/* Reward Points */}
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-6">
-          <div className="flex justify-between items-start flex-wrap gap-4 mb-4">
+          {/* Welcome Banner */}
+          <div
+            style={{
+              background: "linear-gradient(130deg,#6366f1 0%,#7c3aed 55%,#a78bfa 100%)",
+              borderRadius: 20,
+              padding: "22px 28px",
+              color: "#fff",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: 14,
+              boxShadow: "0 6px 24px rgba(99,102,241,0.28)",
+              animation: "sdFadeUp 0.35s ease both",
+            }}
+          >
             <div>
-              <p className="text-xs font-bold tracking-widest text-slate-400 uppercase mb-1">
-                Reward Points
+              <p style={{ fontSize: 20, fontWeight: 800, marginBottom: 5 }}>
+                Welcome back, {user?.name || "Student"} 👋
               </p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-5xl font-extrabold text-indigo-600 leading-none">
-                  {points}
-                </span>
-                <span className="text-slate-300 text-base">/ {maxPoints}</span>
-              </div>
-            </div>
-            <div className="bg-indigo-50 border border-indigo-200 rounded-xl px-4 py-2.5 text-center">
-              <p className="text-xs text-indigo-500 uppercase tracking-widest font-semibold mb-0.5">
-                Current Tier
+              <p style={{ fontSize: 13.5, opacity: 0.82, fontWeight: 400 }}>
+                Explore clubs, join events, and earn rewards — your campus journey starts here.
               </p>
-              <p className="text-base font-extrabold text-indigo-800">{tier}</p>
             </div>
-          </div>
-          <div>
-            <div className="flex justify-between mb-1.5">
-              <span className="text-xs text-slate-400">Progress to next tier</span>
-              <span className="text-xs text-indigo-500 font-semibold">
-                {Math.round(progress)}%
-              </span>
-            </div>
-            <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
-              <div
-                className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-violet-400 transition-all duration-1000"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-            <p className="text-xs text-slate-400 mt-2">
-              Keep participating in events to earn more points ✨
-            </p>
-          </div>
-        </div>
-
-        {/* Browse by Category */}
-        <div className="mb-6">
-          <div className="flex justify-between items-center mb-3">
-            <h2 className="text-sm font-bold text-slate-800">Browse by Category</h2>
             <Link
-              to="/student/clubs"
-              className="text-xs text-indigo-500 font-semibold hover:underline"
+              to="/student/events"
+              style={{
+                background: "rgba(255,255,255,0.18)",
+                border: "1.5px solid rgba(255,255,255,0.35)",
+                borderRadius: 50,
+                padding: "9px 20px",
+                color: "#fff",
+                fontWeight: 700,
+                fontSize: 13,
+                textDecoration: "none",
+                whiteSpace: "nowrap",
+              }}
             >
-              View all →
+              📅 View Events
             </Link>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {CATEGORIES.map((cat) => (
-              <Link
-                key={cat.name}
-                to={`/student/clubs?category=${encodeURIComponent(cat.name)}`}
-                className="flex items-center gap-2.5 px-4 py-3 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 hover:bg-indigo-50 hover:border-indigo-300 transition"
-              >
-                <span className="text-lg">{cat.icon}</span>
-                {cat.name}
-              </Link>
+
+          {/* Tip Banner */}
+          <div
+            style={{
+              background: "#eef2ff",
+              border: "1px solid #c7d2fe",
+              borderRadius: 14,
+              padding: "12px 18px",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              animation: "sdFadeUp 0.4s 0.05s ease both",
+            }}
+          >
+            <span style={{ fontSize: 16 }}>💡</span>
+            <p key={tipIndex} style={{ fontSize: 13.5, color: "#4338ca", fontWeight: 500, margin: 0 }}>
+              {TIPS[tipIndex]}
+            </p>
+          </div>
+
+          {/* Flip Stat Cards */}
+          <div
+            style={{
+              display: "flex",
+              gap: 16,
+              flexWrap: "wrap",
+              animation: "sdFadeUp 0.4s 0.1s ease both",
+            }}
+          >
+            {STAT_CONFIG.map((cfg) => (
+              <FlipCard key={cfg.key} {...cfg} value={stats[cfg.key]} />
             ))}
           </div>
-        </div>
 
-        {/* Quick Actions */}
-        <div>
-          <h2 className="text-sm font-bold text-slate-800 mb-3">Quick Actions</h2>
-          <div className="flex flex-wrap gap-2.5">
-            {[
-              { label: "Explore Clubs", link: "/student/clubs", icon: "🔍" },
-              { label: "My Events", link: "/student/events", icon: "🗓️" },
-              { label: "My Clubs", link: "/student/my-clubs", icon: "⭐" },
-            ].map((action) => (
-              <Link
-                key={action.label}
-                to={action.link}
-                className="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 hover:bg-indigo-50 hover:border-indigo-300 transition shadow-sm"
+          {/* Reward Points */}
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: 20,
+              border: "1px solid #ededf5",
+              padding: "24px 28px",
+              boxShadow: "0 4px 18px rgba(0,0,0,0.05)",
+              animation: "sdFadeUp 0.4s 0.15s ease both",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+                flexWrap: "wrap",
+                gap: 14,
+                marginBottom: 18,
+              }}
+            >
+              <div>
+                <p style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", color: "#9ca3af", textTransform: "uppercase", marginBottom: 6 }}>
+                  Reward Points
+                </p>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
+                  <span style={{ fontSize: 46, fontWeight: 800, color: "#6366f1", lineHeight: 1 }}>{points}</span>
+                  <span style={{ fontSize: 16, color: "#9ca3af" }}>/ {maxPoints}</span>
+                </div>
+              </div>
+              <div
+                style={{
+                  background: tier.bg,
+                  color: tier.text,
+                  padding: "8px 18px",
+                  borderRadius: 50,
+                  fontSize: 13.5,
+                  fontWeight: 700,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  border: `1px solid ${tier.text}22`,
+                  alignSelf: "flex-start",
+                }}
               >
-                <span className="text-base">{action.icon}</span>
-                {action.label}
-              </Link>
-            ))}
-          </div>
-        </div>
+                {tier.icon} {tier.label}
+              </div>
+            </div>
 
-      </div>
+            <div style={{ marginBottom: 6 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+                <span style={{ fontSize: 12.5, color: "#6b7280" }}>Progress to next tier</span>
+                <span style={{ fontSize: 12.5, color: "#6366f1", fontWeight: 700 }}>{Math.round(progress)}%</span>
+              </div>
+              <div style={{ height: 8, background: "#f0f0f8", borderRadius: 100, overflow: "hidden" }}>
+                <div
+                  style={{
+                    height: "100%",
+                    width: `${progress}%`,
+                    background: "linear-gradient(90deg,#6366f1,#8b5cf6)",
+                    borderRadius: 100,
+                    transition: "width 1s cubic-bezier(.4,0,.2,1)",
+                  }}
+                />
+              </div>
+            </div>
+
+            <div
+              style={{
+                background: "#f5f3ff",
+                borderRadius: 10,
+                padding: "9px 14px",
+                fontSize: 13,
+                color: "#6366f1",
+                fontWeight: 500,
+                display: "flex",
+                alignItems: "center",
+                gap: 7,
+                marginTop: 10,
+              }}
+            >
+              <span>✨</span>
+              Participate in club events to earn more points and climb the tiers!
+            </div>
+          </div>
+
+          {/* Browse by Category */}
+          <div style={{ animation: "sdFadeUp 0.4s 0.2s ease both" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+              <h2 style={{ fontSize: 14, fontWeight: 700, color: "#1e1b4b", margin: 0 }}>Browse by Category</h2>
+              <Link to="/student/clubs" style={{ fontSize: 12.5, color: "#6366f1", fontWeight: 600, textDecoration: "none" }}>
+                View all →
+              </Link>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))", gap: 12 }}>
+              {CATEGORIES.map((cat) => (
+                <Link
+                  key={cat.name}
+                  to={`/student/clubs?category=${encodeURIComponent(cat.name)}`}
+                  className="sd-cat-link"
+                >
+                  <span style={{ fontSize: 18 }}>{cat.icon}</span>
+                  {cat.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Quick Actions */}
+          <div style={{ animation: "sdFadeUp 0.4s 0.25s ease both" }}>
+            <h2 style={{ fontSize: 14, fontWeight: 700, color: "#1e1b4b", marginBottom: 12 }}>Quick Actions</h2>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+              {[
+                { label: "Explore Clubs", link: "/student/clubs", icon: "🔍" },
+                { label: "My Events", link: "/student/events", icon: "🗓️" },
+                { label: "My Clubs", link: "/student/my-clubs", icon: "⭐" },
+              ].map((action) => (
+                <Link key={action.label} to={action.link} className="sd-action-btn">
+                  <span style={{ fontSize: 15 }}>{action.icon}</span>
+                  {action.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </>
     </DashboardLayout>
   );
 }
