@@ -4,13 +4,6 @@ import DashboardLayout from "../../components/DashboardLayout";
 import { clubsApi, eventsApi, clubRequestsApi } from "../../api/api";
 import { useAuth } from "../../context/AuthContext";
 
-const CATEGORIES = [
-  { name: "Technical"  },
-  { name: "Cultural & Creative"},
-  { name: "Social" },
-  { name: "Civic" },
-];
-
 const TIPS = [
   "Attend 3 events this month to unlock a badge!",
   "You're only 50 points away from Gold tier!",
@@ -18,143 +11,18 @@ const TIPS = [
   "Check out upcoming events in your clubs",
 ];
 
-const STAT_CONFIG = [
-  {
-    label: "My Clubs",
-    key: "clubs",
-    link: "/student/my-clubs",
-   
-    accent: "#6366f1",
-    frontBg: "linear-gradient(145deg,#eef2ff,#f5f3ff)",
-    frontBorder: "#e0e7ff",
-    frontShadow: "rgba(99,102,241,0.10)",
-    backMsg: "Clubs you've joined appear here. Explore and join clubs that match your interests!",
-  },
-  {
-    label: "Upcoming Events",
-    key: "events",
-    link: "/student/events",
-  
-    accent: "#8b5cf6",
-    frontBg: "linear-gradient(145deg,#f5f3ff,#faf5ff)",
-    frontBorder: "#ede9fe",
-    frontShadow: "rgba(139,92,246,0.10)",
-    backMsg: "Events from your clubs will show here. Stay tuned for exciting activities ahead!",
-  },
-  {
-    label: "Pending Requests",
-    key: "requests",
-    link: "/student/my-clubs",
-     
-    accent: "#f59e0b",
-    frontBg: "linear-gradient(145deg,#fffbeb,#fef9ee)",
-    frontBorder: "#fde68a",
-    frontShadow: "rgba(245,158,11,0.12)",
-    backMsg: "Your pending membership requests are shown here. Approvals usually take 1–2 days.",
-  },
+const CATEGORIES = [
+  { name: "Technical",           bg: "bg-indigo-50", iconBg: "bg-indigo-100", text: "text-indigo-600", badge: "bg-indigo-100 text-indigo-600" },
+  { name: "Cultural & Creative", bg: "bg-pink-50",   iconBg: "bg-pink-100",   text: "text-pink-600",   badge: "bg-pink-100 text-pink-600"   },
+  { name: "Social",              bg: "bg-green-50",  iconBg: "bg-green-100",  text: "text-green-600",  badge: "bg-green-100 text-green-600"  },
+  { name: "Civic",               bg: "bg-orange-50", iconBg: "bg-orange-100", text: "text-orange-500", badge: "bg-orange-100 text-orange-500" },
 ];
 
-function FlipCard({ label, link, icon, accent, frontBg, frontBorder, frontShadow, backMsg, value }) {
-  const [flipped, setFlipped] = useState(false);
-  return (
-    <div
-      onClick={() => setFlipped((f) => !f)}
-      style={{ perspective: 900, cursor: "pointer", flex: "1 1 0", minWidth: 0 }}
-    >
-      <div
-        style={{
-          position: "relative",
-          height: 160,
-          transformStyle: "preserve-3d",
-          transition: "transform 0.55s cubic-bezier(0.4,0.2,0.2,1)",
-          transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
-        }}
-      >
-        {/* FRONT */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: frontBg,
-            border: `1px solid ${frontBorder}`,
-            borderRadius: 18,
-            padding: "20px 22px",
-            backfaceVisibility: "hidden",
-            WebkitBackfaceVisibility: "hidden",
-            boxShadow: `0 4px 18px ${frontShadow}`,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-          }}
-        >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-            <div
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: 12,
-                background: `${accent}22`,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 21,
-              }}
-            >
-              {icon}
-            </div>
-            <span style={{ fontSize: 10.5, color: "#b0b0c0", fontWeight: 500 }}>flip ↻</span>
-          </div>
-          <div>
-            <p style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", color: "#9ca3af", textTransform: "uppercase", marginBottom: 5 }}>
-              {label}
-            </p>
-            <p style={{ fontSize: 46, fontWeight: 800, color: accent, lineHeight: 1 }}>
-              {value}
-            </p>
-          </div>
-        </div>
-
-        {/* BACK */}
-        <Link to={link} onClick={(e) => e.stopPropagation()} style={{ textDecoration: "none" }}>
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background: "linear-gradient(135deg,#1e1b4b,#312e81)",
-              borderRadius: 18,
-              backfaceVisibility: "hidden",
-              WebkitBackfaceVisibility: "hidden",
-              transform: "rotateY(180deg)",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 10,
-              padding: "18px 20px",
-              textAlign: "center",
-            }}
-          >
-            <span style={{ fontSize: 26 }}>{icon}</span>
-            <p style={{ fontSize: 12.5, color: "#c7d2fe", lineHeight: 1.55, margin: 0 }}>{backMsg}</p>
-            <div
-              style={{
-                marginTop: 4,
-                background: accent,
-                color: "#fff",
-                fontSize: 12.5,
-                fontWeight: 700,
-                padding: "6px 18px",
-                borderRadius: 50,
-              }}
-            >
-              View →
-            </div>
-          </div>
-        </Link>
-      </div>
-    </div>
-  );
-}
+const STAT_CARDS = [
+  { key: "clubs",    label: "My Clubs",          to: "/student/my-clubs",  bg: "bg-indigo-50", iconBg: "bg-indigo-100", valueColor: "text-indigo-600", icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-indigo-500"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> },
+  { key: "events",   label: "Upcoming Events",   to: "/student/events",    bg: "bg-purple-50", iconBg: "bg-purple-100", valueColor: "text-purple-600", icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-purple-500"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> },
+  { key: "requests", label: "Pending Requests",  to: "/student/my-clubs",  bg: "bg-amber-50",  iconBg: "bg-amber-100",  valueColor: "text-amber-500",  icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-amber-400"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> },
+];
 
 export default function StudentDashboard() {
   const { user } = useAuth();
@@ -167,15 +35,11 @@ export default function StudentDashboard() {
   }, []);
 
   useEffect(() => {
-    Promise.all([
-      clubsApi.myClubs(),
-      eventsApi.myEvents(),
-      clubRequestsApi.myRequests(),
-    ])
+    Promise.all([clubsApi.myClubs(), eventsApi.myEvents(), clubRequestsApi.myRequests()])
       .then(([clubs, events, requests]) => {
         setStats({
           clubs: clubs.length,
-          events: events.length,
+          events: events.filter((e) => new Date(e.date) >= new Date()).length,
           requests: requests.filter((r) => r.status === "Pending").length,
         });
       })
@@ -185,231 +49,163 @@ export default function StudentDashboard() {
   const points = user?.rewardPoints ?? 0;
   const maxPoints = 500;
   const progress = Math.min((points / maxPoints) * 100, 100);
-  const tier =
-    points >= 400
-      ? { label: "Gold",  text: "#92400e", bg: "#fde68a" }
-      : points >= 200
-      ? { label: "Silver", text: "#374151", bg: "#f3f4f6" }
-      : { label: "Bronze", text: "#92400e", bg: "#fef3c7" };
+  const tier = points >= 400 ? { label: "Gold", bg: "bg-amber-100", text: "text-amber-700" }
+    : points >= 200 ? { label: "Silver", bg: "bg-slate-100", text: "text-slate-600" }
+    : { label: "Bronze", bg: "bg-orange-100", text: "text-orange-700" };
 
   return (
     <DashboardLayout title="Student Dashboard">
-      <>
-        <style>{`
-          @keyframes sdFadeUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to   { opacity: 1; transform: translateY(0); }
-          }
-          .sd-cat-link { display:flex; align-items:center; gap:10px; padding:13px 16px; background:#fff; border:1px solid #ededf5; border-radius:14px; font-size:13.5px; font-weight:600; color:#374151; text-decoration:none; transition:all 0.18s; }
-          .sd-cat-link:hover { border-color:#c7d2fe; background:#f5f3ff; }
-          .sd-action-btn { display:flex; align-items:center; gap:8px; padding:10px 18px; background:#fff; border:1px solid #ededf5; border-radius:50px; font-size:13.5px; font-weight:600; color:#374151; text-decoration:none; box-shadow:0 1px 4px rgba(0,0,0,0.05); transition:all 0.18s; }
-          .sd-action-btn:hover { background:#eef2ff; border-color:#c7d2fe; }
-        `}</style>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        .student-root * { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .stat-card { transition: transform 0.18s ease, box-shadow 0.18s ease; }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px -6px rgba(0,0,0,0.1); }
+        .cat-card { transition: transform 0.18s ease, box-shadow 0.18s ease; }
+        .cat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -4px rgba(0,0,0,0.08); }
+        .qa-btn { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+        .qa-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
+        @keyframes tipFade { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+        .tip-text { animation: tipFade 0.4s ease; }
+      `}</style>
 
-        <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", flexDirection: "column", gap: 22 }}>
-
-          {/* Welcome Banner */}
-          <div
-            style={{
-              background: "linear-gradient(130deg,#6366f1 0%,#7c3aed 55%,#a78bfa 100%)",
-              borderRadius: 20,
-              padding: "22px 28px",
-              color: "#fff",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              flexWrap: "wrap",
-              gap: 14,
-              boxShadow: "0 6px 24px rgba(99,102,241,0.28)",
-              animation: "sdFadeUp 0.35s ease both",
-            }}
+      <div className="student-root">
+        {/* Blue banner */}
+        <div className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-400 px-7 py-6 mb-6 flex items-center justify-between">
+          <div>
+            <p className="text-blue-100 text-sm font-medium">Student Portal</p>
+            <h1 className="text-2xl font-bold text-white mt-0.5">
+              Welcome back, {user?.name?.split(" ")[0] || "Student"}!
+            </h1>
+            <p className="text-blue-100 text-sm mt-1">Explore clubs, join events, and earn rewards.</p>
+          </div>
+          <Link
+            to="/student/events"
+            className="hidden sm:flex items-center gap-2 bg-white text-blue-600 font-bold text-sm px-5 py-2.5 rounded-xl shadow-sm hover:bg-blue-50 transition shrink-0"
           >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            View Events
+          </Link>
+        </div>
+
+        {/* Tip banner */}
+        <div className="flex items-center gap-3 bg-indigo-50 border border-indigo-100 rounded-2xl px-5 py-3 mb-6">
+          <div className="w-8 h-8 bg-indigo-100 rounded-xl flex items-center justify-center shrink-0">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-indigo-500">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+          </div>
+          <p key={tipIndex} className="tip-text text-indigo-700 text-sm font-medium">{TIPS[tipIndex]}</p>
+        </div>
+
+        {/* Stat cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+          {STAT_CARDS.map((c) => (
+            <Link key={c.key} to={c.to} className="block">
+              <div className={`stat-card ${c.bg} rounded-2xl p-5`}>
+                <div className={`w-11 h-11 ${c.iconBg} rounded-xl flex items-center justify-center mb-4`}>
+                  {c.icon}
+                </div>
+                <p className={`text-3xl font-extrabold ${c.valueColor}`}>{stats[c.key]}</p>
+                <p className="text-slate-500 text-sm font-medium mt-1">{c.label}</p>
+                <p className={`text-xs font-semibold flex items-center gap-1 mt-3 ${c.valueColor}`}>
+                  View all
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-3 h-3">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                  </svg>
+                </p>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {/* Reward Points */}
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-6">
+          <div className="flex items-start justify-between gap-4 mb-5 flex-wrap">
             <div>
-              <p style={{ fontSize: 20, fontWeight: 800, marginBottom: 5 }}>
-                Welcome back, {user?.name || "Student"} 
-              </p>
-              <p style={{ fontSize: 13.5, opacity: 0.82, fontWeight: 400 }}>
-                Explore clubs, join events, and earn rewards — your campus journey starts here.
-              </p>
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Reward Points</p>
+              <div className="flex items-baseline gap-2">
+                <span className="text-4xl font-extrabold text-indigo-600">{points}</span>
+                <span className="text-slate-400 text-base font-medium">/ {maxPoints}</span>
+              </div>
             </div>
-            <Link
-              to="/student/events"
-              style={{
-                background: "rgba(255,255,255,0.18)",
-                border: "1.5px solid rgba(255,255,255,0.35)",
-                borderRadius: 50,
-                padding: "9px 20px",
-                color: "#fff",
-                fontWeight: 700,
-                fontSize: 13,
-                textDecoration: "none",
-                whiteSpace: "nowrap",
-              }}
-            >
-               View Events
+            <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold ${tier.bg} ${tier.text}`}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3.5 h-3.5">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+              {tier.label} Tier
+            </span>
+          </div>
+          <div className="mb-2 flex justify-between text-xs text-slate-400 font-medium">
+            <span>Progress to next tier</span>
+            <span className="text-indigo-500 font-bold">{Math.round(progress)}%</span>
+          </div>
+          <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-700"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+          <div className="mt-4 flex items-center gap-2 bg-indigo-50 rounded-xl px-4 py-2.5">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-indigo-400 shrink-0">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+            <p className="text-indigo-600 text-xs font-medium">Participate in club events to earn more points and climb the tiers!</p>
+          </div>
+        </div>
+
+        {/* Browse by Category */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <p className="font-bold text-slate-800 text-sm">Browse by Category</p>
+            <Link to="/student/clubs" className="text-blue-500 text-xs font-semibold flex items-center gap-1 hover:text-blue-700 transition">
+              View all
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-3 h-3">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
             </Link>
           </div>
-
-          {/* Tip Banner */}
-          <div
-            style={{
-              background: "#eef2ff",
-              border: "1px solid #c7d2fe",
-              borderRadius: 14,
-              padding: "12px 18px",
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              animation: "sdFadeUp 0.4s 0.05s ease both",
-            }}
-          >
-            <span style={{ fontSize: 16 }}></span>
-            <p key={tipIndex} style={{ fontSize: 13.5, color: "#4338ca", fontWeight: 500, margin: 0 }}>
-              {TIPS[tipIndex]}
-            </p>
-          </div>
-
-          {/* Flip Stat Cards */}
-          <div
-            style={{
-              display: "flex",
-              gap: 16,
-              flexWrap: "wrap",
-              animation: "sdFadeUp 0.4s 0.1s ease both",
-            }}
-          >
-            {STAT_CONFIG.map((cfg) => (
-              <FlipCard key={cfg.key} {...cfg} value={stats[cfg.key]} />
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {CATEGORIES.map((cat) => (
+              <Link key={cat.name} to={`/student/clubs?category=${encodeURIComponent(cat.name)}`} className="block">
+                <div className={`cat-card ${cat.bg} rounded-2xl p-4`}>
+                  <div className={`w-9 h-9 ${cat.iconBg} rounded-xl flex items-center justify-center mb-3`}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={`w-4 h-4 ${cat.text}`}>
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                    </svg>
+                  </div>
+                  <p className={`font-bold text-xs ${cat.text}`}>{cat.name}</p>
+                </div>
+              </Link>
             ))}
           </div>
-
-          {/* Reward Points */}
-          <div
-            style={{
-              background: "#fff",
-              borderRadius: 20,
-              border: "1px solid #ededf5",
-              padding: "24px 28px",
-              boxShadow: "0 4px 18px rgba(0,0,0,0.05)",
-              animation: "sdFadeUp 0.4s 0.15s ease both",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "flex-start",
-                flexWrap: "wrap",
-                gap: 14,
-                marginBottom: 18,
-              }}
-            >
-              <div>
-                <p style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", color: "#9ca3af", textTransform: "uppercase", marginBottom: 6 }}>
-                  Reward Points
-                </p>
-                <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
-                  <span style={{ fontSize: 46, fontWeight: 800, color: "#6366f1", lineHeight: 1 }}>{points}</span>
-                  <span style={{ fontSize: 16, color: "#9ca3af" }}>/ {maxPoints}</span>
-                </div>
-              </div>
-              <div
-                style={{
-                  background: tier.bg,
-                  color: tier.text,
-                  padding: "8px 18px",
-                  borderRadius: 50,
-                  fontSize: 13.5,
-                  fontWeight: 700,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                  border: `1px solid ${tier.text}22`,
-                  alignSelf: "flex-start",
-                }}
-              >
-                {tier.icon} {tier.label}
-              </div>
-            </div>
-
-            <div style={{ marginBottom: 6 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-                <span style={{ fontSize: 12.5, color: "#6b7280" }}>Progress to next tier</span>
-                <span style={{ fontSize: 12.5, color: "#6366f1", fontWeight: 700 }}>{Math.round(progress)}%</span>
-              </div>
-              <div style={{ height: 8, background: "#f0f0f8", borderRadius: 100, overflow: "hidden" }}>
-                <div
-                  style={{
-                    height: "100%",
-                    width: `${progress}%`,
-                    background: "linear-gradient(90deg,#6366f1,#8b5cf6)",
-                    borderRadius: 100,
-                    transition: "width 1s cubic-bezier(.4,0,.2,1)",
-                  }}
-                />
-              </div>
-            </div>
-
-            <div
-              style={{
-                background: "#f5f3ff",
-                borderRadius: 10,
-                padding: "9px 14px",
-                fontSize: 13,
-                color: "#6366f1",
-                fontWeight: 500,
-                display: "flex",
-                alignItems: "center",
-                gap: 7,
-                marginTop: 10,
-              }}
-            >
-              <span></span>
-              Participate in club events to earn more points and climb the tiers!
-            </div>
-          </div>
-
-          {/* Browse by Category */}
-          <div style={{ animation: "sdFadeUp 0.4s 0.2s ease both" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-              <h2 style={{ fontSize: 14, fontWeight: 700, color: "#1e1b4b", margin: 0 }}>Browse by Category</h2>
-              <Link to="/student/clubs" style={{ fontSize: 12.5, color: "#6366f1", fontWeight: 600, textDecoration: "none" }}>
-                View all →
-              </Link>
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))", gap: 12 }}>
-              {CATEGORIES.map((cat) => (
-                <Link
-                  key={cat.name}
-                  to={`/student/clubs?category=${encodeURIComponent(cat.name)}`}
-                  className="sd-cat-link"
-                >
-                  <span style={{ fontSize: 18 }}>{cat.icon}</span>
-                  {cat.name}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          {/* Quick Actions */}
-          <div style={{ animation: "sdFadeUp 0.4s 0.25s ease both" }}>
-            <h2 style={{ fontSize: 14, fontWeight: 700, color: "#1e1b4b", marginBottom: 12 }}>Quick Actions</h2>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-              {[
-                { label: "Explore Clubs", link: "/student/clubs"  },
-                { label: "My Events", link: "/student/events" },
-                { label: "My Clubs", link: "/student/my-clubs"  },
-              ].map((action) => (
-                <Link key={action.label} to={action.link} className="sd-action-btn">
-                  <span style={{ fontSize: 15 }}>{action.icon}</span>
-                  {action.label}
-                </Link>
-              ))}
-            </div>
-          </div>
-
         </div>
-      </>
+
+        {/* Quick Actions */}
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-8 h-8 bg-yellow-50 rounded-xl flex items-center justify-center">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-yellow-500">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+              </svg>
+            </div>
+            <p className="font-bold text-slate-800 text-sm">Quick Actions</p>
+          </div>
+          <div className="flex gap-3 flex-wrap">
+            {[
+              { label: "Explore Clubs", to: "/student/clubs", bg: "bg-indigo-50", border: "border-indigo-100", text: "text-indigo-600" },
+              { label: "My Events",     to: "/student/events", bg: "bg-purple-50", border: "border-purple-100", text: "text-purple-600" },
+              { label: "My Clubs",      to: "/student/my-clubs", bg: "bg-blue-50", border: "border-blue-100", text: "text-blue-600" },
+            ].map((a) => (
+              <Link key={a.to} to={a.to} className={`qa-btn flex items-center gap-2 px-4 py-2.5 rounded-xl border font-semibold text-sm ${a.bg} ${a.border} ${a.text}`}>
+                {a.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
     </DashboardLayout>
   );
 }

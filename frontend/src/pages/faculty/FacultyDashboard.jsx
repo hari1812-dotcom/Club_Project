@@ -3,140 +3,6 @@ import { Link } from "react-router-dom";
 import DashboardLayout from "../../components/DashboardLayout";
 import { clubsApi, clubRequestsApi, eventsApi } from "../../api/api";
 
-const STAT_CARDS = [
-  {
-    key: "clubs",
-    label: "Clubs I Manage",
-    to: "/faculty/clubs",
-    gradient: "linear-gradient(135deg,#6366f1,#818cf8)",
-    light: "#eef2ff",
-    border: "#e0e7ff",
-    accent: "#6366f1",
-    desc: "Active clubs under your supervision",
-  },
-  {
-    key: "requests",
-    label: "Pending Requests",
-    to: "/faculty/requests",
-    gradient: "linear-gradient(135deg,#f59e0b,#fbbf24)",
-    light: "#fffbeb",
-    border: "#fde68a",
-    accent: "#f59e0b",
-    desc: "Join requests awaiting your approval",
-  },
-  {
-    key: "events",
-    label: "Events",
-    to: "/faculty/events",
-    gradient: "linear-gradient(135deg,#10b981,#34d399)",
-    light: "#ecfdf5",
-    border: "#d1fae5",
-    accent: "#10b981",
-    desc: "Upcoming & ongoing club events",
-  },
-];
-
-function StatCard({ card, value, index }) {
-  const [hovered, setHovered] = useState(false);
-
-  return (
-    <Link
-      to={card.to}
-      style={{ textDecoration: "none" }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <div
-        style={{
-          background: "#fff",
-          border: `2px solid ${hovered ? card.accent : "#ececf4"}`,
-          borderRadius: 22,
-          overflow: "hidden",
-          boxShadow: hovered
-            ? `0 14px 40px ${card.accent}28`
-            : "0 2px 12px rgba(0,0,0,.06)",
-          transform: hovered ? "translateY(-6px) scale(1.02)" : "translateY(0) scale(1)",
-          transition: "all .26s cubic-bezier(.4,.2,.2,1)",
-          animation: `fadeUp .5s ${index * 0.1}s ease both`,
-          cursor: "pointer",
-        }}
-      >
-        {/* Gradient top */}
-        <div
-          style={{
-            background: card.gradient,
-            padding: "26px 24px 22px",
-            position: "relative",
-            overflow: "hidden",
-          }}
-        >
-          {/* Decorative circles */}
-          <div style={{
-            position: "absolute", right: -20, top: -20,
-            width: 90, height: 90, borderRadius: "50%",
-            background: "rgba(255,255,255,.12)",
-          }} />
-          <div style={{
-            position: "absolute", right: 24, bottom: -28,
-            width: 55, height: 55, borderRadius: "50%",
-            background: "rgba(255,255,255,.08)",
-          }} />
-
-          <div style={{
-            display: "flex", justifyContent: "space-between",
-            alignItems: "flex-start", position: "relative",
-          }}>
-            <span style={{ fontSize: 38, filter: "drop-shadow(0 2px 6px rgba(0,0,0,.18))" }}>
-              {card.icon}
-            </span>
-            <span style={{
-              background: "rgba(255,255,255,.22)",
-              color: "#fff",
-              fontSize: 32,
-              fontWeight: 900,
-              padding: "2px 14px",
-              borderRadius: 14,
-              letterSpacing: "-1px",
-              lineHeight: 1.3,
-            }}>
-              {value}
-            </span>
-          </div>
-        </div>
-
-        {/* Bottom info */}
-        <div style={{ padding: "16px 22px 20px" }}>
-          <p style={{
-            fontWeight: 800, fontSize: 15,
-            color: "#1e1b4b", margin: "0 0 5px",
-            letterSpacing: "-.3px",
-          }}>
-            {card.label}
-          </p>
-          <p style={{
-            fontSize: 12, color: "#9ca3af",
-            margin: "0 0 14px", lineHeight: 1.5,
-          }}>
-            {card.desc}
-          </p>
-          <div style={{
-            display: "flex", alignItems: "center", gap: 5,
-            color: card.accent, fontWeight: 700, fontSize: 13,
-          }}>
-            View all
-            <span style={{
-              display: "inline-block",
-              transform: hovered ? "translateX(5px)" : "translateX(0)",
-              transition: "transform .2s",
-              fontSize: 15,
-            }}>→</span>
-          </div>
-        </div>
-      </div>
-    </Link>
-  );
-}
-
 export default function FacultyDashboard() {
   const [stats, setStats] = useState({ clubs: 0, requests: 0, events: 0 });
   const [loading, setLoading] = useState(true);
@@ -155,181 +21,189 @@ export default function FacultyDashboard() {
       .finally(() => setLoading(false));
   }, []);
 
+  const statCards = [
+    {
+      key: "clubs",
+      label: "Clubs I Manage",
+      desc: "Active clubs under your supervision",
+      to: "/faculty/clubs",
+      bg: "bg-indigo-50",
+      iconBg: "bg-indigo-100",
+      valueColor: "text-indigo-600",
+      linkColor: "text-indigo-500",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-indigo-500">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <line x1="19" y1="8" x2="19" y2="14" />
+          <line x1="22" y1="11" x2="16" y2="11" />
+        </svg>
+      ),
+    },
+    {
+      key: "requests",
+      label: "Pending Requests",
+      desc: "Join requests awaiting your approval",
+      to: "/faculty/requests",
+      bg: "bg-orange-50",
+      iconBg: "bg-orange-100",
+      valueColor: "text-orange-500",
+      linkColor: "text-orange-400",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-orange-400">
+          <circle cx="12" cy="12" r="10" />
+          <polyline points="12 6 12 12 16 14" />
+        </svg>
+      ),
+    },
+    {
+      key: "events",
+      label: "Events",
+      desc: "Upcoming & ongoing club events",
+      to: "/faculty/events",
+      bg: "bg-green-50",
+      iconBg: "bg-green-100",
+      valueColor: "text-green-600",
+      linkColor: "text-green-500",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-green-500">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+          <line x1="16" y1="2" x2="16" y2="6" />
+          <line x1="8" y1="2" x2="8" y2="6" />
+          <line x1="3" y1="10" x2="21" y2="10" />
+        </svg>
+      ),
+    },
+  ];
+
+  const quickActions = [
+    {
+      label: "Manage Clubs",
+      to: "/faculty/clubs",
+      bg: "bg-indigo-50",
+      border: "border-indigo-100",
+      text: "text-indigo-600",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" />
+          <line x1="19" y1="8" x2="19" y2="14" /><line x1="22" y1="11" x2="16" y2="11" />
+        </svg>
+      ),
+    },
+    {
+      label: "Review Requests",
+      to: "/faculty/requests",
+      bg: "bg-orange-50",
+      border: "border-orange-100",
+      text: "text-orange-500",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" />
+          <line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /><polyline points="10 9 9 9 8 9" />
+        </svg>
+      ),
+    },
+    {
+      label: "View Events",
+      to: "/faculty/events",
+      bg: "bg-green-50",
+      border: "border-green-100",
+      text: "text-green-600",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" />
+          <line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
+        </svg>
+      ),
+    },
+  ];
+
   return (
     <DashboardLayout title="Faculty Dashboard">
       <style>{`
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        .faculty-root * { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .stat-card { transition: transform 0.18s ease, box-shadow 0.18s ease; }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px -6px rgba(0,0,0,0.1); }
+        .qa-btn { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+        .qa-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
       `}</style>
 
-      <div style={{ maxWidth: 900, margin: "0 auto" }}>
-
-        {/* ── Hero Banner ── */}
-        <div style={{
-          background: "linear-gradient(135deg,#1e1b4b,#312e81)",
-          borderRadius: 22,
-          padding: "28px 32px",
-          marginBottom: 32,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: 16,
-          boxShadow: "0 8px 32px rgba(30,27,75,.28)",
-          position: "relative",
-          overflow: "hidden",
-          animation: "fadeUp .4s ease both",
-        }}>
-          {/* BG decorations */}
-          <div style={{
-            position: "absolute", right: -40, top: -40,
-            width: 160, height: 160, borderRadius: "50%",
-            background: "rgba(255,255,255,.05)",
-          }} />
-          <div style={{
-            position: "absolute", right: 80, bottom: -50,
-            width: 100, height: 100, borderRadius: "50%",
-            background: "rgba(255,255,255,.04)",
-          }} />
-
-          <div style={{ position: "relative" }}>
-            <div style={{
-              display: "flex", alignItems: "center", gap: 10, marginBottom: 8,
-            }}>
-              <span style={{ fontSize: 28 }}></span>
-              <span style={{
-                background: "rgba(165,180,252,.18)",
-                color: "#a5b4fc",
-                fontSize: 11,
-                fontWeight: 700,
-                padding: "3px 12px",
-                borderRadius: 50,
-                letterSpacing: ".5px",
-                textTransform: "uppercase",
-              }}>
+      <div className="faculty-root">
+        {/* Blue banner — same as admin */}
+        <div className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-400 px-7 py-6 mb-7 flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full tracking-wide uppercase">
                 Faculty Portal
               </span>
             </div>
-            <h2 style={{
-              color: "#fff", fontWeight: 900,
-              fontSize: 22, margin: "0 0 6px",
-              letterSpacing: "-.5px",
-            }}>
-              Welcome back! 
-            </h2>
-            <p style={{ color: "#a5b4fc", fontSize: 13.5, margin: 0 }}>
-              Here's a snapshot of your club activities
-            </p>
+            <h1 className="text-2xl font-bold text-white mt-0.5">Welcome back!</h1>
+            <p className="text-blue-100 text-sm mt-1">Here's a snapshot of your club activities.</p>
           </div>
-
-          {/* Live badge */}
-          <div style={{
-            background: "rgba(255,255,255,.08)",
-            border: "1.5px solid rgba(255,255,255,.16)",
-            borderRadius: 14,
-            padding: "12px 20px",
-            textAlign: "center",
-            position: "relative",
-          }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
-              <span style={{
-                width: 7, height: 7, borderRadius: "50%",
-                background: "#34d399",
-                boxShadow: "0 0 0 3px rgba(52,211,153,.25)",
-                display: "inline-block",
-              }} />
-              <span style={{ color: "#6ee7b7", fontSize: 11, fontWeight: 700 }}>LIVE</span>
+          <div className="hidden sm:flex flex-col items-center bg-white/20 rounded-2xl px-5 py-3 shrink-0 min-w-[90px] text-center">
+            <div className="flex items-center gap-1.5 mb-1">
+              <span className="w-2 h-2 bg-green-400 rounded-full" />
+              <span className="text-green-200 text-xs font-bold uppercase tracking-wide">Live</span>
             </div>
-            <p style={{ color: "#fff", fontWeight: 800, fontSize: 20, margin: 0 }}>
+            <p className="text-white text-3xl font-extrabold leading-none">
               {stats.clubs + stats.requests + stats.events}
             </p>
-            <p style={{ color: "#a5b4fc", fontSize: 11, margin: "2px 0 0" }}>Total items</p>
+            <p className="text-blue-100 text-xs mt-1">Total items</p>
           </div>
         </div>
 
-        {/* ── Stat Cards ── */}
+        {/* Stat cards */}
         {loading ? (
-          <div style={{
-            textAlign: "center", padding: 60,
-            color: "#9ca3af", fontSize: 14,
-          }}>
-            Loading dashboard…
+          <div className="flex items-center justify-center h-48">
+            <div className="w-8 h-8 border-4 border-blue-100 border-t-blue-500 rounded-full animate-spin" />
           </div>
         ) : (
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
-            gap: 22,
-          }}>
-            {STAT_CARDS.map((card, i) => (
-              <StatCard
-                key={card.key}
-                card={card}
-                value={stats[card.key]}
-                index={i}
-              />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            {statCards.map((c) => (
+              <Link key={c.key} to={c.to} className="block">
+                <div className={`stat-card ${c.bg} rounded-2xl p-5 h-full`}>
+                  <div className={`w-11 h-11 ${c.iconBg} rounded-xl flex items-center justify-center mb-4`}>
+                    {c.icon}
+                  </div>
+                  <p className={`text-3xl font-extrabold ${c.valueColor}`}>{stats[c.key]}</p>
+                  <p className="text-slate-700 font-bold text-sm mt-1">{c.label}</p>
+                  <p className="text-slate-400 text-xs mt-0.5 mb-3">{c.desc}</p>
+                  <p className={`text-xs font-semibold flex items-center gap-1 ${c.linkColor}`}>
+                    View all
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-3 h-3">
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  </p>
+                </div>
+              </Link>
             ))}
           </div>
         )}
 
-        {/* ── Quick Actions ── */}
-        <div style={{
-          marginTop: 32,
-          background: "#fff",
-          borderRadius: 20,
-          border: "1.5px solid #e8e8f0",
-          padding: "22px 26px",
-          boxShadow: "0 2px 12px rgba(0,0,0,.05)",
-          animation: "fadeUp .5s .35s ease both",
-        }}>
-          <h3 style={{
-            fontWeight: 800, fontSize: 14,
-            color: "#1e1b4b", marginBottom: 16,
-            letterSpacing: "-.2px",
-          }}>
-            ⚡ Quick Actions
-          </h3>
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-            {[
-              { label: "Manage Clubs", to: "/faculty/clubs", color: "#6366f1", bg: "#eef2ff", border: "#e0e7ff", icon: "🏫" },
-              { label: "Review Requests", to: "/faculty/requests", color: "#f59e0b", bg: "#fffbeb", border: "#fde68a", icon: "📋" },
-              { label: "View Events", to: "/faculty/events", color: "#10b981", bg: "#ecfdf5", border: "#d1fae5", icon: "📅" },
-            ].map((action) => (
+        {/* Quick Actions */}
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-8 h-8 bg-yellow-50 rounded-xl flex items-center justify-center">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-yellow-500">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+              </svg>
+            </div>
+            <p className="font-bold text-slate-800 text-sm">Quick Actions</p>
+          </div>
+          <div className="flex gap-3 flex-wrap">
+            {quickActions.map((a) => (
               <Link
-                key={action.to}
-                to={action.to}
-                style={{
-                  textDecoration: "none",
-                  background: action.bg,
-                  border: `1.5px solid ${action.border}`,
-                  borderRadius: 12,
-                  padding: "10px 18px",
-                  color: action.color,
-                  fontWeight: 700,
-                  fontSize: 13,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 7,
-                  transition: "all .2s",
-                }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                  e.currentTarget.style.boxShadow = `0 6px 16px ${action.color}22`;
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = "none";
-                }}
+                key={a.to}
+                to={a.to}
+                className={`qa-btn flex items-center gap-2 px-4 py-2.5 rounded-xl border font-semibold text-sm ${a.bg} ${a.border} ${a.text}`}
               >
-                <span>{action.icon}</span>
-                {action.label}
+                {a.icon}
+                {a.label}
               </Link>
             ))}
           </div>
         </div>
-
       </div>
     </DashboardLayout>
   );

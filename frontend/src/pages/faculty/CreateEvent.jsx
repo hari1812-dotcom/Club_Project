@@ -6,41 +6,26 @@ import { clubsApi, eventsApi } from "../../api/api";
 export default function CreateEvent() {
   const navigate = useNavigate();
   const [clubs, setClubs] = useState([]);
-  const [form, setForm] = useState({
-    clubId: "",
-    venue: "",
-    date: "",
-    description: "",
-  });
+  const [form, setForm] = useState({ clubId: "", venue: "", date: "", description: "" });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    clubsApi
-      .facultyClubs()
-      .then((list) => {
-        setClubs(list);
-        if (list.length > 0) {
-          setForm((f) => ({ ...f, clubId: list[0]._id }));
-        }
-      })
-      .catch(() => {});
+    clubsApi.facultyClubs().then((list) => {
+      setClubs(list);
+      if (list.length > 0) setForm((f) => ({ ...f, clubId: list[0]._id }));
+    }).catch(() => {});
   }, []);
 
-  const updateField = (key, value) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
-  };
+  const updateField = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
 
   const handleSubmit = async () => {
     setError("");
-
     if (!form.clubId || !form.venue || !form.date || !form.description.trim()) {
       setError("Please fill in all required fields.");
       return;
     }
-
     setSubmitting(true);
-
     try {
       await eventsApi.create(form);
       navigate("/faculty/events");
@@ -50,28 +35,6 @@ export default function CreateEvent() {
     }
   };
 
-  const inputBase = {
-    width: "100%",
-    padding: "12px 16px",
-    border: "1.5px solid #d1d5db",
-    borderRadius: "10px",
-    fontSize: "15px",
-    color: "#1f2937",
-    backgroundColor: "#ffffff",
-    outline: "none",
-    transition: "border-color 0.2s, box-shadow 0.2s",
-    boxSizing: "border-box",
-  };
-
-  const labelBase = {
-    display: "block",
-    fontSize: "14px",
-    fontWeight: 600,
-    color: "#374151",
-    marginBottom: "8px",
-  };
-
-  // Min date = tomorrow
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   const minDate = tomorrow.toISOString().slice(0, 16);
@@ -79,196 +42,123 @@ export default function CreateEvent() {
   return (
     <DashboardLayout title="Create Event">
       <style>{`
-        .form-input:focus {
-          border-color: #6366f1;
-          box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
-        }
-        .error-box {
-          background: #fef2f2;
-          border: 1px solid #fecaca;
-          color: #991b1b;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        .faculty-root * { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .form-field:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.12); }
       `}</style>
 
-      <div style={{ maxWidth: "640px", margin: "0 auto", padding: "0 16px" }}>
-        {/* Header */}
-        <div style={{ marginBottom: "32px" }}>
-          <h1
-            style={{
-              fontSize: "28px",
-              fontWeight: 700,
-              color: "#111827",
-              margin: "0 0 8px",
-            }}
-          >
-            Create New Event
-          </h1>
-          <p style={{ color: "#6b7280", fontSize: "15px", margin: 0 }}>
-            Events must be reviewed and approved by admin before students can see them.
-          </p>
+      <div className="faculty-root" style={{ maxWidth: 640, margin: "0 auto" }}>
+        {/* Blue banner */}
+        <div className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-400 px-7 py-6 mb-7 flex items-center justify-between">
+          <div>
+            <p className="text-blue-100 text-sm font-medium">Faculty</p>
+            <h1 className="text-2xl font-bold text-white mt-0.5">Create New Event</h1>
+            <p className="text-blue-100 text-sm mt-1">Events must be approved by admin before students can see them.</p>
+          </div>
+          <div className="hidden sm:flex w-14 h-14 rounded-2xl bg-white/20 items-center justify-center shrink-0">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" className="w-7 h-7">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="12" y1="11" x2="12" y2="17" />
+              <line x1="9" y1="14" x2="15" y2="14" />
+            </svg>
+          </div>
         </div>
 
-        {/* Form Card */}
-        <div
-          style={{
-            background: "#ffffff",
-            borderRadius: "16px",
-            border: "1px solid #e5e7eb",
-            boxShadow: "0 6px 20px rgba(0,0,0,0.05)",
-            padding: "32px",
-          }}
-        >
+        {/* Form card */}
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
           {/* Club */}
-          <div style={{ marginBottom: "28px" }}>
-            <label style={labelBase}>Club</label>
+          <div className="mb-5">
+            <label className="block text-sm font-bold text-slate-700 mb-1.5">Club</label>
             <select
               value={form.clubId}
               onChange={(e) => updateField("clubId", e.target.value)}
-              className="form-input"
-              style={{ ...inputBase, cursor: "pointer" }}
+              className="form-field w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 transition cursor-pointer"
             >
               <option value="">Select a club</option>
               {clubs.map((club) => (
-                <option key={club._id} value={club._id}>
-                  {club.name}
-                </option>
+                <option key={club._id} value={club._id}>{club.name}</option>
               ))}
             </select>
           </div>
 
-          {/* Description / Title */}
-          <div style={{ marginBottom: "28px" }}>
-            <label style={labelBase}>Event Title / Description</label>
+          {/* Description */}
+          <div className="mb-5">
+            <label className="block text-sm font-bold text-slate-700 mb-1.5">Event Title / Description</label>
             <textarea
               value={form.description}
               onChange={(e) => updateField("description", e.target.value)}
-              className="form-input"
-              style={{ ...inputBase, minHeight: "110px", resize: "vertical" }}
-              placeholder="e.g. Annual Tech Symposium 2025 - 2-day innovation & coding challenge"
+              className="form-field w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 transition resize-vertical"
+              style={{ minHeight: 110 }}
+              placeholder="e.g. Annual Tech Symposium 2025 – 2-day innovation & coding challenge"
             />
           </div>
 
           {/* Venue */}
-          <div style={{ marginBottom: "28px" }}>
-            <label style={labelBase}>Venue</label>
+          <div className="mb-5">
+            <label className="block text-sm font-bold text-slate-700 mb-1.5">Venue</label>
             <input
               type="text"
               value={form.venue}
               onChange={(e) => updateField("venue", e.target.value)}
-              className="form-input"
-              style={inputBase}
+              className="form-field w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 transition"
               placeholder="e.g. Seminar Hall A, Academic Block - II"
             />
           </div>
 
           {/* Date & Time */}
-          <div style={{ marginBottom: "32px" }}>
-            <label style={labelBase}>Date and Time</label>
+          <div className="mb-6">
+            <label className="block text-sm font-bold text-slate-700 mb-1.5">Date and Time</label>
             <input
               type="datetime-local"
               value={form.date}
               min={minDate}
               onChange={(e) => updateField("date", e.target.value)}
-              className="form-input"
-              style={inputBase}
+              className="form-field w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 transition"
             />
-
             {form.date && (
-              <div
-                style={{
-                  marginTop: "10px",
-                  fontSize: "14px",
-                  color: "#4b5563",
-                }}
-              >
-                Selected:{" "}
-                <strong>
-                  {new Date(form.date).toLocaleDateString("en-IN", {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}{" "}
-                  at{" "}
-                  {new Date(form.date).toLocaleTimeString("en-IN", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </strong>
+              <div className="mt-2.5 flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-xl px-4 py-2.5">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-blue-500 shrink-0">
+                  <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
+                </svg>
+                <p className="text-xs text-blue-700 font-medium">
+                  {new Date(form.date).toLocaleDateString("en-IN", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
+                  {" at "}
+                  {new Date(form.date).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}
+                </p>
               </div>
             )}
           </div>
 
-          {/* Error Message */}
+          {/* Error */}
           {error && (
-            <div
-              className="error-box"
-              style={{
-                padding: "14px 18px",
-                borderRadius: "10px",
-                marginBottom: "24px",
-                fontSize: "14px",
-                fontWeight: 500,
-              }}
-            >
+            <div className="flex items-center gap-2.5 bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 mb-5 text-sm font-medium">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 shrink-0">
+                <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
               {error}
             </div>
           )}
 
-          {/* Action Buttons */}
-          <div
-            style={{
-              display: "flex",
-              gap: "16px",
-              flexWrap: "wrap",
-            }}
-          >
+          {/* Buttons */}
+          <div className="flex gap-3 flex-wrap">
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              style={{
-                flex: "1",
-                minWidth: "160px",
-                padding: "14px 0",
-                fontSize: "15px",
-                fontWeight: 600,
-                color: "#ffffff",
-                backgroundColor: submitting ? "#a5b4fc" : "#6366f1",
-                border: "none",
-                borderRadius: "10px",
-                cursor: submitting ? "not-allowed" : "pointer",
-                transition: "background-color 0.2s",
-              }}
+              className="flex-1 min-w-[160px] py-3.5 bg-blue-500 text-white font-bold text-sm rounded-xl hover:bg-blue-600 disabled:opacity-60 disabled:cursor-not-allowed transition shadow-sm shadow-blue-200"
             >
-              {submitting ? "Submitting..." : "Submit for Approval"}
+              {submitting ? "Submitting…" : "Submit for Approval"}
             </button>
-
             <button
               onClick={() => navigate("/faculty/events")}
-              style={{
-                padding: "14px 28px",
-                fontSize: "15px",
-                fontWeight: 600,
-                color: "#374151",
-                backgroundColor: "#f3f4f6",
-                border: "1px solid #d1d5db",
-                borderRadius: "10px",
-                cursor: "pointer",
-                transition: "background-color 0.2s",
-              }}
+              className="px-6 py-3.5 bg-slate-50 border border-slate-200 text-slate-600 font-semibold text-sm rounded-xl hover:bg-slate-100 transition"
             >
               Cancel
             </button>
           </div>
 
-          <p
-            style={{
-              marginTop: "24px",
-              textAlign: "center",
-              fontSize: "13px",
-              color: "#9ca3af",
-            }}
-          >
+          <p className="text-center text-xs text-slate-400 mt-5">
             All events are reviewed by the administrator before publication.
           </p>
         </div>

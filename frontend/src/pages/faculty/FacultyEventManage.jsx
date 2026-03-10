@@ -14,11 +14,11 @@ export default function FacultyEventManage() {
   const [msgType, setMsgType] = useState("success");
 
   useEffect(() => {
-    eventsApi.getById(id).then(data => {
+    eventsApi.getById(id).then((data) => {
       setEvent(data);
       setCoordinatorId(data.studentCoordinator?._id || data.studentCoordinator || "");
       const members = data.clubMembers || [];
-      setAttendees(members.map(m => ({
+      setAttendees(members.map((m) => ({
         studentId: m._id, name: m.name, email: m.email,
         present: false, points: 0, reason: "participation",
       })));
@@ -26,7 +26,7 @@ export default function FacultyEventManage() {
   }, [id]);
 
   const updateAttendee = (idx, field, value) => {
-    setAttendees(prev => {
+    setAttendees((prev) => {
       const next = [...prev];
       next[idx] = { ...next[idx], [field]: value };
       return next;
@@ -34,11 +34,12 @@ export default function FacultyEventManage() {
   };
 
   const handleSubmit = async () => {
-    setMessage(""); setSubmitting(true);
+    setMessage("");
+    setSubmitting(true);
     try {
       const payload = {
         coordinatorId: coordinatorId || undefined,
-        attendees: attendees.map(a => ({
+        attendees: attendees.map((a) => ({
           studentId: a.studentId,
           present: !!a.present,
           points: Number(a.points) || 0,
@@ -46,174 +47,150 @@ export default function FacultyEventManage() {
         })),
       };
       await eventsApi.updateAttendance(id, payload);
-      setMessage(" Saved successfully! Attendance and coordinator updated.");
+      setMessage("Saved successfully! Attendance and coordinator updated.");
       setMsgType("success");
     } catch (err) {
       setMessage(err.message || "Failed to save.");
       setMsgType("error");
-    } finally { setSubmitting(false); }
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  if (!event) return (
-    <DashboardLayout title="Manage Event">
-      <div style={{ textAlign: "center", padding: 60, color: "#9ca3af" }}>Loading event…</div>
-    </DashboardLayout>
-  );
+  if (!event)
+    return (
+      <DashboardLayout title="Manage Event">
+        <div className="flex items-center justify-center h-64">
+          <div className="w-8 h-8 border-4 border-blue-100 border-t-blue-500 rounded-full animate-spin" />
+        </div>
+      </DashboardLayout>
+    );
 
   const members = event.clubMembers || [];
 
   return (
     <DashboardLayout title="Manage Event">
-      <style>{`@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }`}</style>
-      <div style={{ maxWidth: 820, margin: "0 auto" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        .faculty-root * { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .form-field:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.12); }
+        .attendee-row { transition: background 0.15s ease; }
+      `}</style>
 
+      <div className="faculty-root" style={{ maxWidth: 820, margin: "0 auto" }}>
         {/* Back */}
-        <button onClick={() => navigate("/faculty/events")} style={{
-          background: "#eef2ff", border: "1.5px solid #e0e7ff",
-          borderRadius: 12, padding: "8px 18px",
-          color: "#6366f1", fontWeight: 700, fontSize: 13,
-          cursor: "pointer", marginBottom: 24,
-        }}>← Back to Events</button>
+        <button
+          onClick={() => navigate("/faculty/events")}
+          className="flex items-center gap-2 bg-blue-50 border border-blue-100 text-blue-600 text-sm font-semibold px-4 py-2 rounded-xl mb-6 hover:bg-blue-100 transition"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4">
+            <path d="M19 12H5M12 5l-7 7 7 7" />
+          </svg>
+          Back to Events
+        </button>
 
-        {/* Event info card */}
-        <div style={{
-          background: "#fff", borderRadius: 20,
-          border: "1.5px solid #e8e8f0",
-          boxShadow: "0 4px 20px rgba(0,0,0,.07)",
-          overflow: "hidden", marginBottom: 24,
-          animation: "fadeUp .4s ease both",
-        }}>
-          <div style={{ height: 5, background: "linear-gradient(90deg,#6366f1,#818cf8)" }} />
-          <div style={{ padding: "22px 26px" }}>
-            <h2 style={{ fontWeight: 800, fontSize: 18, color: "#5f5c93", margin: "0 0 8px" }}>{event.description}</h2>
-            <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-              <span style={{ fontSize: 13, color: "#6b7280" }}>{event.clubId?.name}</span>
-              <span style={{ fontSize: 13, color: "#6b7280" }}>{event.venue}</span>
-              <span style={{ fontSize: 13, color: "#6b7280" }}>{new Date(event.date).toLocaleString()}</span>
+        {/* Event info */}
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-5">
+          <div className="h-1.5 bg-gradient-to-r from-blue-500 to-blue-300" />
+          <div className="px-6 py-5">
+            <div className="flex items-start gap-4">
+              <div className="w-11 h-11 bg-blue-50 rounded-xl flex items-center justify-center shrink-0">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 text-blue-500">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+              </div>
+              <div>
+                <h2 className="font-bold text-slate-800 text-base">{event.description}</h2>
+                <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
+                  <span className="text-slate-400 text-xs">{event.clubId?.name}</span>
+                  <span className="text-slate-400 text-xs">{event.venue}</span>
+                  <span className="text-slate-400 text-xs">{new Date(event.date).toLocaleString()}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Coordinator */}
-        <div style={{
-          background: "#fff", borderRadius: 20,
-          border: "1.5px solid #e8e8f0",
-          boxShadow: "0 4px 20px rgba(0,0,0,.07)",
-          padding: "22px 26px", marginBottom: 20,
-          animation: "fadeUp .4s .1s ease both",
-        }}>
-          <h3 style={{ fontWeight: 800, fontSize: 15, color: "#1e1b4b", margin: "0 0 14px" }}>
-             Student Coordinator
-          </h3>
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 mb-4">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-9 h-9 bg-purple-50 rounded-xl flex items-center justify-center">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-purple-500">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
+              </svg>
+            </div>
+            <p className="font-bold text-slate-800 text-sm">Student Coordinator</p>
+          </div>
           <select
             value={coordinatorId}
-            onChange={e => setCoordinatorId(e.target.value)}
-            style={{
-              width: "100%", padding: "11px 14px",
-              border: "1.5px solid #e8e8f0", borderRadius: 12,
-              fontSize: 14, color: "#1e1b4b", background: "#f8fafc",
-              outline: "none", cursor: "pointer",
-            }}
+            onChange={(e) => setCoordinatorId(e.target.value)}
+            className="form-field w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 transition cursor-pointer"
           >
             <option value="">— No coordinator —</option>
-            {members.map(m => <option key={m._id} value={m._id}>{m.name} ({m.email})</option>)}
+            {members.map((m) => (
+              <option key={m._id} value={m._id}>{m.name} ({m.email})</option>
+            ))}
           </select>
         </div>
 
         {/* Attendance */}
-        <div style={{
-          background: "#fff", borderRadius: 20,
-          border: "1.5px solid #e8e8f0",
-          boxShadow: "0 4px 20px rgba(0,0,0,.07)",
-          padding: "22px 26px", marginBottom: 20,
-          animation: "fadeUp .4s .2s ease both",
-        }}>
-          <h3 style={{ fontWeight: 800, fontSize: 15, color: "#1e1b4b", margin: "0 0 6px" }}>
-            📋 Attendance & Reward Points
-          </h3>
-          <p style={{ fontSize: 12.5, color: "#9ca3af", margin: "0 0 18px" }}>
-            Mark present students and assign reward points.
-          </p>
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 mb-5">
+          <div className="flex items-center gap-3 mb-1">
+            <div className="w-9 h-9 bg-green-50 rounded-xl flex items-center justify-center">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-green-500">
+                <path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+              </svg>
+            </div>
+            <p className="font-bold text-slate-800 text-sm">Attendance & Reward Points</p>
+          </div>
+          <p className="text-slate-400 text-xs mb-4 ml-12">Mark present students and assign reward points.</p>
 
           {attendees.length === 0 ? (
-            <div style={{
-              textAlign: "center", padding: "30px 20px",
-              background: "#f8fafc", borderRadius: 14,
-              border: "1.5px dashed #e0e7ff",
-            }}>
-              <p style={{ color: "#6366f1", fontWeight: 700 }}>No members yet</p>
-              <p style={{ color: "#9ca3af", fontSize: 13 }}>Approve join requests to add students.</p>
+            <div className="text-center py-10 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+              <p className="text-slate-500 font-semibold text-sm">No members yet</p>
+              <p className="text-slate-400 text-xs mt-1">Approve join requests to add students.</p>
             </div>
           ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <div className="flex flex-col gap-2">
               {attendees.map((a, idx) => (
-                <div key={a.studentId} style={{
-                  display: "flex", alignItems: "center", gap: 12,
-                  background: a.present ? "#f0fdf4" : "#f8fafc",
-                  border: `1.5px solid ${a.present ? "#bbf7d0" : "#e8e8f0"}`,
-                  borderRadius: 14, padding: "12px 16px",
-                  flexWrap: "wrap", transition: "all .2s",
-                }}>
-                  {/* Avatar */}
-                  <div style={{
-                    width: 36, height: 36, borderRadius: "50%",
-                    background: a.present ? "#dcfce7" : "#eef2ff",
-                    border: `2px solid ${a.present ? "#bbf7d0" : "#e0e7ff"}`,
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    fontWeight: 800, fontSize: 14,
-                    color: a.present ? "#15803d" : "#6366f1",
-                    flexShrink: 0,
-                  }}>
+                <div
+                  key={a.studentId}
+                  className={`attendee-row flex items-center gap-3 rounded-xl px-4 py-3 border flex-wrap ${a.present ? "bg-green-50 border-green-100" : "bg-slate-50 border-slate-100"}`}
+                >
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 ${a.present ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-600"}`}>
                     {a.name[0].toUpperCase()}
                   </div>
-
-                  {/* Name */}
-                  <div style={{ flex: 1, minWidth: 120 }}>
-                    <p style={{ fontWeight: 700, fontSize: 13.5, color: "#1e1b4b", margin: "0 0 2px" }}>{a.name}</p>
-                    <p style={{ fontSize: 11.5, color: "#9ca3af", margin: 0 }}>{a.email}</p>
+                  <div className="flex-1 min-w-[100px]">
+                    <p className="font-semibold text-slate-800 text-sm">{a.name}</p>
+                    <p className="text-slate-400 text-xs">{a.email}</p>
                   </div>
-
-                  {/* Present toggle */}
-                  <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer" }}>
+                  <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={!!a.present}
-                      onChange={e => updateAttendee(idx, "present", e.target.checked)}
-                      style={{ width: 16, height: 16, cursor: "pointer" }}
+                      onChange={(e) => updateAttendee(idx, "present", e.target.checked)}
+                      className="w-4 h-4 accent-green-500 cursor-pointer"
                     />
-                    <span style={{ fontSize: 13, fontWeight: 600, color: a.present ? "#15803d" : "#6b7280" }}>
-                      {a.present ? "Present ✓" : "Absent"}
+                    <span className={`text-xs font-semibold ${a.present ? "text-green-600" : "text-slate-400"}`}>
+                      {a.present ? "Present" : "Absent"}
                     </span>
                   </label>
-
-                  {/* Points */}
                   <input
                     type="number" min={0} max={100}
-                    placeholder="Points"
+                    placeholder="Pts"
                     value={a.points || ""}
-                    onChange={e => updateAttendee(idx, "points", e.target.value)}
-                    style={{
-                      width: 80, padding: "7px 10px",
-                      border: "1.5px solid #e8e8f0", borderRadius: 10,
-                      fontSize: 13, color: "#1e1b4b", background: "#fff",
-                      outline: "none", textAlign: "center",
-                    }}
+                    onChange={(e) => updateAttendee(idx, "points", e.target.value)}
+                    className="form-field w-16 px-2 py-2 bg-white border border-slate-200 rounded-xl text-xs text-center text-slate-700 transition"
                   />
-
-                  {/* Reason */}
                   <select
                     value={a.reason}
-                    onChange={e => updateAttendee(idx, "reason", e.target.value)}
-                    style={{
-                      padding: "7px 10px",
-                      border: "1.5px solid #e8e8f0", borderRadius: 10,
-                      fontSize: 13, color: "#1e1b4b", background: "#fff",
-                      outline: "none", cursor: "pointer",
-                    }}
+                    onChange={(e) => updateAttendee(idx, "reason", e.target.value)}
+                    className="form-field px-2 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-700 transition cursor-pointer"
                   >
                     <option value="participation">Participation</option>
                     <option value="organizer">Organizer</option>
-                    <option value="winner">Winner 🏆</option>
+                    <option value="winner">Winner</option>
                   </select>
                 </div>
               ))}
@@ -223,13 +200,16 @@ export default function FacultyEventManage() {
 
         {/* Message */}
         {message && (
-          <div style={{
-            background: msgType === "success" ? "#dcfce7" : "#fee2e2",
-            border: `1.5px solid ${msgType === "success" ? "#bbf7d0" : "#fecaca"}`,
-            borderRadius: 14, padding: "14px 18px",
-            color: msgType === "success" ? "#15803d" : "#dc2626",
-            fontWeight: 600, fontSize: 14, marginBottom: 16,
-          }}>
+          <div className={`flex items-center gap-2.5 rounded-xl px-4 py-3 mb-4 text-sm font-medium border ${
+            msgType === "success"
+              ? "bg-green-50 border-green-200 text-green-700"
+              : "bg-red-50 border-red-200 text-red-600"
+          }`}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 shrink-0">
+              {msgType === "success"
+                ? <polyline points="20 6 9 17 4 12" />
+                : <><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></>}
+            </svg>
             {message}
           </div>
         )}
@@ -238,16 +218,9 @@ export default function FacultyEventManage() {
         <button
           onClick={handleSubmit}
           disabled={submitting}
-          style={{
-            width: "100%", padding: "14px 0",
-            background: submitting ? "#a5b4fc" : "#6366f1",
-            color: "#fff", fontWeight: 800, fontSize: 16,
-            border: "none", borderRadius: 16, cursor: submitting ? "not-allowed" : "pointer",
-            boxShadow: "0 4px 16px #6366f133",
-            transition: "all .2s",
-          }}
+          className="w-full py-4 bg-blue-500 text-white font-bold text-sm rounded-2xl hover:bg-blue-600 disabled:opacity-60 disabled:cursor-not-allowed transition shadow-sm shadow-blue-200"
         >
-          {submitting ? "Saving…" : " Save Attendance & Coordinator"}
+          {submitting ? "Saving…" : "Save Attendance & Coordinator"}
         </button>
       </div>
     </DashboardLayout>

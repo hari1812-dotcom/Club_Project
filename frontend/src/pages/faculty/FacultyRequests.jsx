@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import DashboardLayout from "../../components/DashboardLayout";
 import { clubRequestsApi } from "../../api/api";
 
+const AVATAR_BG = ["bg-blue-400","bg-green-400","bg-purple-400","bg-pink-400","bg-orange-400","bg-teal-400"];
+
 export default function FacultyRequests() {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -9,153 +11,121 @@ export default function FacultyRequests() {
   const [updating, setUpdating] = useState(null);
 
   useEffect(() => {
-    clubRequestsApi.facultyRequests()
-      .then(setRequests).catch(() => setRequests([]))
-      .finally(() => setLoading(false));
+    clubRequestsApi.facultyRequests().then(setRequests).catch(() => setRequests([])).finally(() => setLoading(false));
   }, []);
 
   const handleStatus = async (reqId, status) => {
     setUpdating(reqId);
     try {
       await clubRequestsApi.updateStatus(reqId, status, reason[reqId] || "");
-      setRequests(prev => prev.map(r => r._id === reqId ? { ...r, status } : r));
-    } catch (e) { alert(e.message); }
-    finally { setUpdating(null); }
+      setRequests((prev) => prev.map((r) => (r._id === reqId ? { ...r, status } : r)));
+    } catch (e) {
+      alert(e.message);
+    } finally {
+      setUpdating(null);
+    }
   };
 
-  const pending = requests.filter(r => r.status === "Pending");
-  const done = requests.filter(r => r.status !== "Pending");
+  const pending = requests.filter((r) => r.status === "Pending");
+  const done    = requests.filter((r) => r.status !== "Pending");
 
   return (
     <DashboardLayout title="Join Requests">
-      <style>{`@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }`}</style>
-      <div style={{ maxWidth: 860, margin: "0 auto" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        .faculty-root * { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .req-card { transition: transform 0.16s ease, box-shadow 0.16s ease; }
+        .req-card:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -6px rgba(0,0,0,0.09); }
+      `}</style>
 
-        {/* Header */}
-        <div style={{ marginBottom: 28 }}>
-          <h1 style={{ fontSize: 28, fontWeight: 800, color: "#1e1b4b", margin: "0 0 5px" }}>Join Requests</h1>
-          <p style={{ color: "#6b7280", fontSize: 14, margin: 0 }}>
-            {pending.length} pending request{pending.length !== 1 ? "s" : ""} awaiting your decision
-          </p>
+      <div className="faculty-root">
+        {/* Blue banner */}
+        <div className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-400 px-7 py-6 mb-7 flex items-center justify-between">
+          <div>
+            <p className="text-blue-100 text-sm font-medium">Manage</p>
+            <h1 className="text-2xl font-bold text-white mt-0.5">Join Requests</h1>
+            <p className="text-blue-100 text-sm mt-1">
+              {pending.length} pending request{pending.length !== 1 ? "s" : ""} awaiting your decision.
+            </p>
+          </div>
+          <div className="hidden sm:flex w-14 h-14 rounded-2xl bg-white/20 items-center justify-center shrink-0">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" className="w-7 h-7">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="16" y1="13" x2="8" y2="13" />
+              <line x1="16" y1="17" x2="8" y2="17" />
+            </svg>
+          </div>
         </div>
 
         {loading ? (
-          <div style={{ textAlign: "center", padding: 60, color: "#9ca3af" }}>Loading…</div>
+          <div className="flex items-center justify-center h-48">
+            <div className="w-8 h-8 border-4 border-blue-100 border-t-blue-500 rounded-full animate-spin" />
+          </div>
         ) : (
           <>
-            {/* Pending */}
-            <div style={{ marginBottom: 32 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
-                <div style={{
-                  background: "#fef9c3", border: "1.5px solid #fde68a",
-                  borderRadius: 10, padding: "4px 14px",
-                  fontSize: 12, fontWeight: 700, color: "#b45309",
-                }}>
-                  ⏳ Pending — {pending.length}
-                </div>
+            {/* Pending section */}
+            <div className="mb-8">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="inline-flex items-center gap-1.5 bg-orange-100 text-orange-600 text-xs font-bold px-3 py-1 rounded-full border border-orange-200">
+                  <span className="w-1.5 h-1.5 bg-orange-400 rounded-full" />
+                  Pending — {pending.length}
+                </span>
               </div>
 
               {pending.length === 0 ? (
-                <div style={{
-                  textAlign: "center", padding: "50px 20px",
-                  background: "#f8fafc", borderRadius: 18,
-                  border: "1.5px dashed #e0e7ff",
-                }}>
-                  <div style={{ fontSize: 36, marginBottom: 10 }}></div>
-                  <p style={{ color: "#6366f1", fontWeight: 700, fontSize: 14 }}>All caught up!</p>
-                  <p style={{ color: "#9ca3af", fontSize: 13 }}>No pending join requests.</p>
+                <div className="flex flex-col items-center justify-center py-14 bg-white rounded-2xl border border-slate-100">
+                  <div className="w-14 h-14 bg-green-50 rounded-2xl flex items-center justify-center mb-3">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-7 h-7 text-green-400">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </div>
+                  <p className="text-slate-600 font-semibold">All caught up!</p>
+                  <p className="text-slate-400 text-sm mt-1">No pending join requests.</p>
                 </div>
               ) : (
-                <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                <div className="flex flex-col gap-3">
                   {pending.map((r, i) => (
-                    <div key={r._id} style={{
-                      background: "#fff",
-                      borderRadius: 18,
-                      border: "1.5px solid #e8e8f0",
-                      boxShadow: "0 2px 12px rgba(0,0,0,.06)",
-                      padding: "20px 24px",
-                      animation: `fadeUp .4s ${i * 0.07}s ease both`,
-                    }}>
-                      <div style={{ display: "flex", alignItems: "flex-start", gap: 14, flexWrap: "wrap" }}>
-                        {/* Avatar */}
-                        <div style={{
-                          width: 46, height: 46, borderRadius: "50%",
-                          background: "#eef2ff", border: "2px solid #e0e7ff",
-                          display: "flex", alignItems: "center", justifyContent: "center",
-                          fontWeight: 800, fontSize: 18, color: "#6366f1", flexShrink: 0,
-                        }}>
+                    <div key={r._id} className="req-card bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+                      <div className="flex items-start gap-4 flex-wrap">
+                        <div className={`w-11 h-11 ${AVATAR_BG[i % AVATAR_BG.length]} rounded-xl flex items-center justify-center text-white font-bold text-sm shrink-0`}>
                           {(r.studentId?.name || "?")[0].toUpperCase()}
                         </div>
-
-                        {/* Info */}
-                        <div style={{ flex: 1 }}>
-                          <h3 style={{ fontWeight: 800, fontSize: 15, color: "#1e1b4b", margin: "0 0 3px" }}>
-                            {r.studentId?.name}
-                          </h3>
-                          <p style={{ fontSize: 12.5, color: "#6b7280", margin: "0 0 6px" }}>{r.studentId?.email}</p>
-                          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                            <span style={{
-                              background: "#eef2ff", color: "#6366f1",
-                              fontSize: 11, fontWeight: 700,
-                              padding: "2px 12px", borderRadius: 50,
-                              border: "1px solid #e0e7ff",
-                            }}>🏫 {r.clubId?.name}</span>
-                            <span style={{
-                              background: "#fef9c3", color: "#b45309",
-                              fontSize: 11, fontWeight: 700,
-                              padding: "2px 12px", borderRadius: 50,
-                              border: "1px solid #fde68a",
-                            }}>⏳ Pending</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-bold text-slate-800 text-sm">{r.studentId?.name}</p>
+                          <p className="text-slate-400 text-xs mt-0.5">{r.studentId?.email}</p>
+                          <div className="flex gap-2 flex-wrap mt-2">
+                            <span className="inline-flex items-center gap-1 bg-blue-50 text-blue-600 text-xs font-semibold px-2.5 py-0.5 rounded-full border border-blue-100">
+                              {r.clubId?.name}
+                            </span>
+                            <span className="inline-flex items-center gap-1.5 bg-orange-50 text-orange-500 text-xs font-semibold px-2.5 py-0.5 rounded-full border border-orange-100">
+                              <span className="w-1.5 h-1.5 bg-orange-400 rounded-full" />
+                              Pending
+                            </span>
                           </div>
                         </div>
-
-                        {/* Actions */}
-                        <div style={{ display: "flex", flexDirection: "column", gap: 8, minWidth: 200 }}>
+                        <div className="flex flex-col gap-2 min-w-[200px]">
                           <input
                             type="text"
                             placeholder="Reason (optional for reject)"
-                            style={{
-                              padding: "8px 12px",
-                              border: "1.5px solid #e8e8f0",
-                              borderRadius: 10, fontSize: 12.5,
-                              color: "#374151", outline: "none",
-                              width: "100%", boxSizing: "border-box",
-                            }}
+                            className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition w-full"
                             value={reason[r._id] || ""}
-                            onChange={e => setReason(prev => ({ ...prev, [r._id]: e.target.value }))}
+                            onChange={(e) => setReason((prev) => ({ ...prev, [r._id]: e.target.value }))}
                           />
-                          <div style={{ display: "flex", gap: 8 }}>
+                          <div className="flex gap-2">
                             <button
                               onClick={() => handleStatus(r._id, "Approved")}
                               disabled={updating === r._id}
-                              style={{
-                                flex: 1, padding: "9px 0",
-                                background: "#dcfce7", border: "1.5px solid #bbf7d0",
-                                borderRadius: 10, color: "#15803d",
-                                fontWeight: 700, fontSize: 13, cursor: "pointer",
-                                opacity: updating === r._id ? .6 : 1,
-                                transition: "all .2s",
-                              }}
-                              onMouseEnter={e => e.currentTarget.style.background = "#bbf7d0"}
-                              onMouseLeave={e => e.currentTarget.style.background = "#dcfce7"}
+                              className="flex-1 py-2 bg-green-50 border border-green-200 text-green-600 font-semibold text-xs rounded-xl hover:bg-green-100 disabled:opacity-50 transition"
                             >
-                              ✓ Approve
+                              Approve
                             </button>
                             <button
                               onClick={() => handleStatus(r._id, "Rejected")}
                               disabled={updating === r._id}
-                              style={{
-                                flex: 1, padding: "9px 0",
-                                background: "#fee2e2", border: "1.5px solid #fecaca",
-                                borderRadius: 10, color: "#dc2626",
-                                fontWeight: 700, fontSize: 13, cursor: "pointer",
-                                opacity: updating === r._id ? .6 : 1,
-                                transition: "all .2s",
-                              }}
-                              onMouseEnter={e => e.currentTarget.style.background = "#fecaca"}
-                              onMouseLeave={e => e.currentTarget.style.background = "#fee2e2"}
+                              className="flex-1 py-2 bg-red-50 border border-red-200 text-red-500 font-semibold text-xs rounded-xl hover:bg-red-100 disabled:opacity-50 transition"
                             >
-                              ✕ Reject
+                              Reject
                             </button>
                           </div>
                         </div>
@@ -166,45 +136,31 @@ export default function FacultyRequests() {
               )}
             </div>
 
-            {/* Done requests */}
+            {/* Processed section */}
             {done.length > 0 && (
               <div>
-                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
-                  <div style={{
-                    background: "#f1f5f9", borderRadius: 10, padding: "4px 14px",
-                    fontSize: 12, fontWeight: 700, color: "#64748b",
-                  }}>
-                    📋 Processed — {done.length}
-                  </div>
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="inline-flex items-center gap-1.5 bg-slate-100 text-slate-500 text-xs font-bold px-3 py-1 rounded-full">
+                    Processed — {done.length}
+                  </span>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
                   {done.map((r, i) => (
-                    <div key={r._id} style={{
-                      background: "#f8fafc",
-                      borderRadius: 14,
-                      border: "1.5px solid #e8e8f0",
-                      padding: "14px 20px",
-                      display: "flex", alignItems: "center", gap: 12,
-                      animation: `fadeUp .3s ${i * 0.05}s ease both`,
-                    }}>
-                      <div style={{
-                        width: 36, height: 36, borderRadius: "50%",
-                        background: r.status === "Approved" ? "#dcfce7" : "#fee2e2",
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                        fontSize: 16, flexShrink: 0,
-                      }}>
+                    <div
+                      key={r._id}
+                      className={`flex items-center gap-4 px-5 py-3.5 hover:bg-slate-50 transition ${i !== done.length - 1 ? "border-b border-slate-50" : ""}`}
+                    >
+                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold shrink-0 ${r.status === "Approved" ? "bg-green-50 text-green-600" : "bg-red-50 text-red-500"}`}>
                         {r.status === "Approved" ? "✓" : "✕"}
                       </div>
-                      <div style={{ flex: 1 }}>
-                        <p style={{ fontWeight: 700, fontSize: 13.5, color: "#374151", margin: "0 0 2px" }}>{r.studentId?.name}</p>
-                        <p style={{ fontSize: 12, color: "#9ca3af", margin: 0 }}>{r.clubId?.name}</p>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-slate-800 text-sm">{r.studentId?.name}</p>
+                        <p className="text-slate-400 text-xs">{r.clubId?.name}</p>
                       </div>
-                      <span style={{
-                        background: r.status === "Approved" ? "#dcfce7" : "#fee2e2",
-                        color: r.status === "Approved" ? "#15803d" : "#dc2626",
-                        fontSize: 11, fontWeight: 700,
-                        padding: "3px 12px", borderRadius: 50,
-                      }}>{r.status}</span>
+                      <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full ${r.status === "Approved" ? "bg-green-50 text-green-600" : "bg-red-50 text-red-500"}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${r.status === "Approved" ? "bg-green-400" : "bg-red-400"}`} />
+                        {r.status}
+                      </span>
                     </div>
                   ))}
                 </div>
