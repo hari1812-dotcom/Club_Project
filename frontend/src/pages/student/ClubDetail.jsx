@@ -5,10 +5,10 @@ import { clubsApi, clubRequestsApi } from "../../api/api";
 import { useAuth } from "../../context/AuthContext";
 
 const CATEGORY_META = {
-  "Technical":          { icon: "⚙️", accent: "#6366f1", light: "#eef2ff", border: "#e0e7ff" },
-  "Cultural & Creative":{ icon: "🎨", accent: "#ec4899", light: "#fff0f6", border: "#fce7f3" },
-  "Social":             { icon: "🤝", accent: "#10b981", light: "#ecfdf5", border: "#d1fae5" },
-  "Civic":              { icon: "🏛️", accent: "#f59e0b", light: "#fffbeb", border: "#fde68a" },
+  "Technical":          {  accent: "#6366f1", light: "#eef2ff", border: "#e0e7ff" },
+  "Cultural & Creative":{ accent: "#ec4899", light: "#fff0f6", border: "#fce7f3" },
+  "Social":             { accent: "#10b981", light: "#ecfdf5", border: "#d1fae5" },
+  "Civic":              { accent: "#f59e0b", light: "#fffbeb", border: "#fde68a" },
 };
 
 // ── Join Modal ────────────────────────────────────────────────────────────────
@@ -183,7 +183,7 @@ function JoinModal({ club, onClose, onSuccess }) {
                 fontSize: 14, transition: "background .2s",
               }}
             >
-              {submitting ? "Submitting…" : "Submit Request 🚀"}
+              {submitting ? "Submitting…" : "Submit Request "}
             </button>
           </div>
         </form>
@@ -326,7 +326,7 @@ export default function ClubDetail() {
             style={{ background: "#fff", borderRadius: 18, border: "1px solid #e8e8f0", padding: "22px", boxShadow: "0 2px 10px rgba(0,0,0,.04)", animationDelay: "0.08s" }}
           >
             <h3 style={{ fontWeight: 700, fontSize: 14, color: "#1e1b4b", marginBottom: 14, display: "flex", alignItems: "center", gap: 7 }}>
-              🛠️ Equipment & Resources
+               Equipment & Resources
             </h3>
             {club.equipment?.length > 0 ? (
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
@@ -354,7 +354,7 @@ export default function ClubDetail() {
             style={{ background: "#fff", borderRadius: 18, border: "1px solid #e8e8f0", padding: "22px", boxShadow: "0 2px 10px rgba(0,0,0,.04)", animationDelay: "0.12s" }}
           >
             <h3 style={{ fontWeight: 700, fontSize: 14, color: "#1e1b4b", marginBottom: 14, display: "flex", alignItems: "center", gap: 7 }}>
-              🎯 Club Activities
+               Club Activities
             </h3>
             {club.activities?.length > 0 ? (
               <ul style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -363,7 +363,7 @@ export default function ClubDetail() {
                     key={i}
                     style={{ display: "flex", alignItems: "flex-start", gap: 8, fontSize: 13, color: "#374151" }}
                   >
-                    <span style={{ color: meta.accent, fontSize: 16, marginTop: 1, flexShrink: 0 }}>◆</span>
+                    <span style={{ color: meta.accent, fontSize: 16, marginTop: 1, flexShrink: 0 }}></span>
                     {act}
                   </li>
                 ))}
@@ -397,9 +397,9 @@ export default function ClubDetail() {
               </div>
               <div style={{ flex: 1, minWidth: 200 }}>
                 <p style={{ fontWeight: 700, fontSize: 15, color: "#1e1b4b", marginBottom: 10 }}>{faculty.name}</p>
-                <InfoRow icon="🏫" label="Department" value={faculty.department} />
-                <InfoRow icon="📧" label="Email" value={faculty.email} />
-                <InfoRow icon="📞" label="Phone" value={faculty.phone} />
+                <InfoRow label="Department" value={faculty.department} />
+                <InfoRow label="Email" value={faculty.email} />
+                <InfoRow label="Phone" value={faculty.phone} />
               </div>
             </div>
           ) : (
@@ -426,7 +426,7 @@ export default function ClubDetail() {
                 >
                   <div>
                     <p style={{ fontWeight: 700, fontSize: 13.5, color: "#1e1b4b" }}>{ev.title || ev.description}</p>
-                    {ev.venue && <p style={{ fontSize: 12, color: "#6b7280", marginTop: 2 }}>📍 {ev.venue}</p>}
+                    {ev.venue && <p style={{ fontSize: 12, color: "#6b7280", marginTop: 2 }}>  {ev.venue}</p>}
                   </div>
                   <span style={{ background: meta.accent, color: "#fff", fontSize: 11.5, fontWeight: 700, padding: "4px 12px", borderRadius: 50 }}>
                     {new Date(ev.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
@@ -444,7 +444,7 @@ export default function ClubDetail() {
         >
           {isMember || requestStatus === "Approved" ? (
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <div style={{ width: 44, height: 44, background: "#ecfdf5", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}>✅</div>
+              <div style={{ width: 44, height: 44, background: "#ecfdf5", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}> </div>
               <div>
                 <p style={{ fontWeight: 700, fontSize: 15, color: "#065f46" }}>You're a member!</p>
                 <p style={{ fontSize: 13, color: "#6b7280" }}>You can view upcoming events from My Clubs.</p>
@@ -452,7 +452,7 @@ export default function ClubDetail() {
             </div>
           ) : requestStatus === "Pending" ? (
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <div style={{ width: 44, height: 44, background: "#fffbeb", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}>⏳</div>
+              <div style={{ width: 44, height: 44, background: "#fffbeb", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}></div>
               <div>
                 <p style={{ fontWeight: 700, fontSize: 15, color: "#92400e" }}>Request Pending</p>
                 <p style={{ fontSize: 13, color: "#6b7280" }}>Your join request is awaiting approval from the club incharge.</p>
@@ -476,7 +476,7 @@ export default function ClubDetail() {
                   whiteSpace: "nowrap",
                 }}
               >
-                🚀 Request to Join
+                  Request to Join
               </button>
             </div>
           )}

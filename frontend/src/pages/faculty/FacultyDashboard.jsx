@@ -7,7 +7,6 @@ const STAT_CARDS = [
   {
     key: "clubs",
     label: "Clubs I Manage",
-    icon: "🏫",
     to: "/faculty/clubs",
     gradient: "linear-gradient(135deg,#6366f1,#818cf8)",
     light: "#eef2ff",
@@ -18,7 +17,6 @@ const STAT_CARDS = [
   {
     key: "requests",
     label: "Pending Requests",
-    icon: "📋",
     to: "/faculty/requests",
     gradient: "linear-gradient(135deg,#f59e0b,#fbbf24)",
     light: "#fffbeb",
@@ -29,7 +27,6 @@ const STAT_CARDS = [
   {
     key: "events",
     label: "Events",
-    icon: "📅",
     to: "/faculty/events",
     gradient: "linear-gradient(135deg,#10b981,#34d399)",
     light: "#ecfdf5",
@@ -201,7 +198,7 @@ export default function FacultyDashboard() {
             <div style={{
               display: "flex", alignItems: "center", gap: 10, marginBottom: 8,
             }}>
-              <span style={{ fontSize: 28 }}>👨‍🏫</span>
+              <span style={{ fontSize: 28 }}></span>
               <span style={{
                 background: "rgba(165,180,252,.18)",
                 color: "#a5b4fc",
@@ -220,7 +217,7 @@ export default function FacultyDashboard() {
               fontSize: 22, margin: "0 0 6px",
               letterSpacing: "-.5px",
             }}>
-              Welcome back! 👋
+              Welcome back! 
             </h2>
             <p style={{ color: "#a5b4fc", fontSize: 13.5, margin: 0 }}>
               Here's a snapshot of your club activities

@@ -5,7 +5,7 @@ import { clubsApi } from "../../api/api";
 
 const CATEGORY_META = {
   "Technical": {
-    icon: "⚙️",
+   
     desc: "Coding, science, math & open-source clubs",
     gradient: "linear-gradient(135deg,#6366f1,#818cf8)",
     light: "#eef2ff",
@@ -13,7 +13,7 @@ const CATEGORY_META = {
     accent: "#6366f1",
   },
   "Cultural & Creative": {
-    icon: "🎨",
+  
     desc: "Arts, music, photography & Tamil culture",
     gradient: "linear-gradient(135deg,#ec4899,#f43f5e)",
     light: "#fff0f6",
@@ -21,7 +21,7 @@ const CATEGORY_META = {
     accent: "#ec4899",
   },
   "Social": {
-    icon: "🤝",
+  
     desc: "Community service, YRC, Rotaract & more",
     gradient: "linear-gradient(135deg,#10b981,#059669)",
     light: "#ecfdf5",
@@ -29,7 +29,7 @@ const CATEGORY_META = {
     accent: "#10b981",
   },
   "Civic": {
-    icon: "🏛️",
+  
     desc: "Women's cell, yoga, geography & leadership",
     gradient: "linear-gradient(135deg,#f59e0b,#d97706)",
     light: "#fffbeb",
@@ -169,7 +169,7 @@ function ClubCard({ club, meta, index }) {
 
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
           <span style={{ fontSize: 11, color: "#9ca3af" }}>
-            👥 {club.members?.length ?? 0} members
+              {club.members?.length ?? 0} members
           </span>
         </div>
 
@@ -334,7 +334,7 @@ export default function AvailableClubs() {
             }}>
               {selectedCat
                 ? `${CATEGORY_META[selectedCat].icon} ${selectedCat} Clubs`
-                : "🎓 Explore College Clubs"}
+                : " Explore College Clubs"}
             </h2>
             <p style={{ color: "#a5b4fc", fontSize: 13.5, margin: 0 }}>
               {selectedCat

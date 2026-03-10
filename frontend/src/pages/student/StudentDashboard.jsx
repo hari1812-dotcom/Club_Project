@@ -5,17 +5,17 @@ import { clubsApi, eventsApi, clubRequestsApi } from "../../api/api";
 import { useAuth } from "../../context/AuthContext";
 
 const CATEGORIES = [
-  { name: "Technical", icon: "⚙️" },
-  { name: "Cultural & Creative", icon: "🎨" },
-  { name: "Social", icon: "🤝" },
-  { name: "Civic", icon: "🏛️" },
+  { name: "Technical"  },
+  { name: "Cultural & Creative"},
+  { name: "Social" },
+  { name: "Civic" },
 ];
 
 const TIPS = [
-  "Attend 3 events this month to unlock a badge! 🏅",
-  "You're only 50 points away from Gold tier! 🥇",
-  "New clubs just opened for applications! 🎉",
-  "Check out upcoming events in your clubs 📅",
+  "Attend 3 events this month to unlock a badge!",
+  "You're only 50 points away from Gold tier!",
+  "New clubs just opened for applications!",
+  "Check out upcoming events in your clubs",
 ];
 
 const STAT_CONFIG = [
@@ -23,7 +23,7 @@ const STAT_CONFIG = [
     label: "My Clubs",
     key: "clubs",
     link: "/student/my-clubs",
-    icon: "🎯",
+   
     accent: "#6366f1",
     frontBg: "linear-gradient(145deg,#eef2ff,#f5f3ff)",
     frontBorder: "#e0e7ff",
@@ -34,7 +34,7 @@ const STAT_CONFIG = [
     label: "Upcoming Events",
     key: "events",
     link: "/student/events",
-    icon: "📅",
+  
     accent: "#8b5cf6",
     frontBg: "linear-gradient(145deg,#f5f3ff,#faf5ff)",
     frontBorder: "#ede9fe",
@@ -45,7 +45,7 @@ const STAT_CONFIG = [
     label: "Pending Requests",
     key: "requests",
     link: "/student/my-clubs",
-    icon: "⏳",
+     
     accent: "#f59e0b",
     frontBg: "linear-gradient(145deg,#fffbeb,#fef9ee)",
     frontBorder: "#fde68a",
@@ -187,10 +187,10 @@ export default function StudentDashboard() {
   const progress = Math.min((points / maxPoints) * 100, 100);
   const tier =
     points >= 400
-      ? { label: "Gold", icon: "🥇", text: "#92400e", bg: "#fde68a" }
+      ? { label: "Gold",  text: "#92400e", bg: "#fde68a" }
       : points >= 200
-      ? { label: "Silver", icon: "🥈", text: "#374151", bg: "#f3f4f6" }
-      : { label: "Bronze", icon: "🥉", text: "#92400e", bg: "#fef3c7" };
+      ? { label: "Silver", text: "#374151", bg: "#f3f4f6" }
+      : { label: "Bronze", text: "#92400e", bg: "#fef3c7" };
 
   return (
     <DashboardLayout title="Student Dashboard">
@@ -226,7 +226,7 @@ export default function StudentDashboard() {
           >
             <div>
               <p style={{ fontSize: 20, fontWeight: 800, marginBottom: 5 }}>
-                Welcome back, {user?.name || "Student"} 👋
+                Welcome back, {user?.name || "Student"} 
               </p>
               <p style={{ fontSize: 13.5, opacity: 0.82, fontWeight: 400 }}>
                 Explore clubs, join events, and earn rewards — your campus journey starts here.
@@ -246,7 +246,7 @@ export default function StudentDashboard() {
                 whiteSpace: "nowrap",
               }}
             >
-              📅 View Events
+               View Events
             </Link>
           </div>
 
@@ -263,7 +263,7 @@ export default function StudentDashboard() {
               animation: "sdFadeUp 0.4s 0.05s ease both",
             }}
           >
-            <span style={{ fontSize: 16 }}>💡</span>
+            <span style={{ fontSize: 16 }}></span>
             <p key={tipIndex} style={{ fontSize: 13.5, color: "#4338ca", fontWeight: 500, margin: 0 }}>
               {TIPS[tipIndex]}
             </p>
@@ -364,7 +364,7 @@ export default function StudentDashboard() {
                 marginTop: 10,
               }}
             >
-              <span>✨</span>
+              <span></span>
               Participate in club events to earn more points and climb the tiers!
             </div>
           </div>
@@ -396,9 +396,9 @@ export default function StudentDashboard() {
             <h2 style={{ fontSize: 14, fontWeight: 700, color: "#1e1b4b", marginBottom: 12 }}>Quick Actions</h2>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
               {[
-                { label: "Explore Clubs", link: "/student/clubs", icon: "🔍" },
-                { label: "My Events", link: "/student/events", icon: "🗓️" },
-                { label: "My Clubs", link: "/student/my-clubs", icon: "⭐" },
+                { label: "Explore Clubs", link: "/student/clubs"  },
+                { label: "My Events", link: "/student/events" },
+                { label: "My Clubs", link: "/student/my-clubs"  },
               ].map((action) => (
                 <Link key={action.label} to={action.link} className="sd-action-btn">
                   <span style={{ fontSize: 15 }}>{action.icon}</span>

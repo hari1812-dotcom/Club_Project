@@ -46,7 +46,7 @@ export default function FacultyEventManage() {
         })),
       };
       await eventsApi.updateAttendance(id, payload);
-      setMessage("✅ Saved successfully! Attendance and coordinator updated.");
+      setMessage(" Saved successfully! Attendance and coordinator updated.");
       setMsgType("success");
     } catch (err) {
       setMessage(err.message || "Failed to save.");
@@ -85,11 +85,11 @@ export default function FacultyEventManage() {
         }}>
           <div style={{ height: 5, background: "linear-gradient(90deg,#6366f1,#818cf8)" }} />
           <div style={{ padding: "22px 26px" }}>
-            <h2 style={{ fontWeight: 800, fontSize: 18, color: "#1e1b4b", margin: "0 0 8px" }}>{event.description}</h2>
+            <h2 style={{ fontWeight: 800, fontSize: 18, color: "#5f5c93", margin: "0 0 8px" }}>{event.description}</h2>
             <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-              <span style={{ fontSize: 13, color: "#6b7280" }}>🏫 {event.clubId?.name}</span>
-              <span style={{ fontSize: 13, color: "#6b7280" }}>📍 {event.venue}</span>
-              <span style={{ fontSize: 13, color: "#6b7280" }}>🗓️ {new Date(event.date).toLocaleString()}</span>
+              <span style={{ fontSize: 13, color: "#6b7280" }}>{event.clubId?.name}</span>
+              <span style={{ fontSize: 13, color: "#6b7280" }}>{event.venue}</span>
+              <span style={{ fontSize: 13, color: "#6b7280" }}>{new Date(event.date).toLocaleString()}</span>
             </div>
           </div>
         </div>
@@ -103,7 +103,7 @@ export default function FacultyEventManage() {
           animation: "fadeUp .4s .1s ease both",
         }}>
           <h3 style={{ fontWeight: 800, fontSize: 15, color: "#1e1b4b", margin: "0 0 14px" }}>
-            🎯 Student Coordinator
+             Student Coordinator
           </h3>
           <select
             value={coordinatorId}
@@ -247,7 +247,7 @@ export default function FacultyEventManage() {
             transition: "all .2s",
           }}
         >
-          {submitting ? "Saving…" : "💾 Save Attendance & Coordinator"}
+          {submitting ? "Saving…" : " Save Attendance & Coordinator"}
         </button>
       </div>
     </DashboardLayout>

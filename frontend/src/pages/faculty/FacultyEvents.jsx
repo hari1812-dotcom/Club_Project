@@ -4,9 +4,9 @@ import DashboardLayout from "../../components/DashboardLayout";
 import { eventsApi } from "../../api/api";
 
 const STATUS_META = {
-  Pending:  { bg: "#fef9c3", border: "#fde68a", color: "#b45309", icon: "⏳" },
-  Approved: { bg: "#dcfce7", border: "#bbf7d0", color: "#15803d", icon: "✅" },
-  Rejected: { bg: "#fee2e2", border: "#fecaca", color: "#dc2626", icon: "❌" },
+  Pending:  { bg: "#fef9c3", border: "#fde68a", color: "#b45309"},
+  Approved: { bg: "#dcfce7", border: "#bbf7d0", color: "#15803d"},
+  Rejected: { bg: "#fee2e2", border: "#fecaca", color: "#dc2626"},
 };
 
 export default function FacultyEvents() {
@@ -102,13 +102,13 @@ export default function FacultyEvents() {
                       background: m.bg, border: `1.5px solid ${m.border}`,
                       display: "flex", alignItems: "center", justifyContent: "center",
                       fontSize: 22, flexShrink: 0,
-                    }}>📅</div>
+                    }}></div>
                     <div style={{ flex: 1 }}>
                       <h3 style={{ fontWeight: 800, fontSize: 15, color: "#1e1b4b", margin: "0 0 5px" }}>{ev.description}</h3>
                       <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                        <span style={{ fontSize: 12.5, color: "#6b7280" }}>🏫 {ev.clubId?.name}</span>
-                        <span style={{ fontSize: 12.5, color: "#6b7280" }}>📍 {ev.venue}</span>
-                        <span style={{ fontSize: 12.5, color: "#6b7280" }}>🗓️ {new Date(ev.date).toLocaleString()}</span>
+                        <span style={{ fontSize: 12.5, color: "#6b7280" }}>{ev.clubId?.name}</span>
+                        <span style={{ fontSize: 12.5, color: "#6b7280" }}>{ev.venue}</span>
+                        <span style={{ fontSize: 12.5, color: "#6b7280" }}>{new Date(ev.date).toLocaleString()}</span>
                       </div>
                       <span style={{
                         display: "inline-block", marginTop: 8,

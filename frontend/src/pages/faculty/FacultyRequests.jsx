@@ -61,7 +61,7 @@ export default function FacultyRequests() {
                   background: "#f8fafc", borderRadius: 18,
                   border: "1.5px dashed #e0e7ff",
                 }}>
-                  <div style={{ fontSize: 36, marginBottom: 10 }}>✅</div>
+                  <div style={{ fontSize: 36, marginBottom: 10 }}></div>
                   <p style={{ color: "#6366f1", fontWeight: 700, fontSize: 14 }}>All caught up!</p>
                   <p style={{ color: "#9ca3af", fontSize: 13 }}>No pending join requests.</p>
                 </div>
