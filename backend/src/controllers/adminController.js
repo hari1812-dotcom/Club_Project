@@ -1,4 +1,4 @@
-gitconst User = require("../models/User");
+const User = require("../models/User");
 const Event = require("../models/Event");
 const Club = require("../models/Club");
 const Notification = require("../models/Notification");
